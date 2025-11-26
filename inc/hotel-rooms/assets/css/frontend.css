@@ -711,6 +711,13 @@ body.vie-modal-open {
     margin-bottom: 20px;
 }
 
+.vie-price-type > label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--vie-text);
+}
+
 .vie-radio-group {
     display: flex;
     flex-direction: column;
@@ -719,21 +726,28 @@ body.vie-modal-open {
 
 .vie-radio {
     display: flex;
+    flex-direction: row;
     align-items: flex-start;
     gap: 12px;
-    padding: 14px;
+    padding: 14px 16px;
     border: 2px solid var(--vie-border);
     border-radius: 10px;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
+    position: relative;
 }
 
 .vie-radio:hover {
     border-color: var(--vie-primary);
 }
 
-.vie-radio input {
-    margin-top: 4px;
+.vie-radio input[type="radio"] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0 0;
+    accent-color: var(--vie-primary);
+    cursor: pointer;
 }
 
 .vie-radio input:checked + .vie-radio-label strong {
@@ -748,10 +762,14 @@ body.vie-modal-open {
 .vie-radio-label {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    gap: 2px;
 }
 
 .vie-radio-label strong {
     font-size: 14px;
+    font-weight: 600;
+    color: var(--vie-text);
 }
 
 .vie-radio-label small {
@@ -787,8 +805,36 @@ body.vie-modal-open {
     margin-bottom: 8px;
 }
 
+/* Error State - Availability Issue */
+.vie-summary-placeholder.vie-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    color: #dc2626;
+    padding: 16px 20px;
+}
+
+.vie-summary-placeholder.vie-error p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.vie-summary-placeholder.vie-error::before {
+    content: '⚠️';
+    display: block;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
 .vie-price-summary.has-data .vie-summary-placeholder {
     display: none;
+}
+
+/* Error always visible - override has-data */
+.vie-price-summary .vie-summary-placeholder.vie-error {
+    display: block !important;
 }
 
 /* Summary Header */
@@ -1083,27 +1129,223 @@ body.vie-modal-open {
     color: var(--vie-text-muted);
 }
 
-/* ===== DATEPICKER CUSTOM ===== */
+/* ===== DATEPICKER - MINIMALIST MODERN DESIGN ===== */
 #ui-datepicker-div.ui-datepicker {
-    z-index: 999999 !important; /* Above modal */
+    z-index: 1000000 !important;
     font-family: inherit;
-    border-radius: var(--vie-radius);
-    box-shadow: var(--vie-shadow-lg);
-    border: 1px solid var(--vie-border);
-    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+    border: none;
+    padding: 16px;
     background: #fff !important;
+    width: auto;
+    min-width: 300px;
 }
 
-.ui-datepicker-header {
+#ui-datepicker-div.vie-datepicker-prices {
+    min-width: 380px;
+}
+
+/* Header - Clean & Minimal */
+.vie-datepicker-prices .ui-datepicker-header {
     background: none;
     border: none;
-    padding-bottom: 12px;
+    padding: 0 4px 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.ui-datepicker-title {
+.vie-datepicker-prices .ui-datepicker-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1e293b;
+    letter-spacing: -0.01em;
+}
+
+/* Navigation - Subtle */
+.vie-datepicker-prices .ui-datepicker-prev,
+.vie-datepicker-prices .ui-datepicker-next {
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    top: 2px !important;
+    width: 32px;
+    height: 32px;
+}
+
+.vie-datepicker-prices .ui-datepicker-prev:hover,
+.vie-datepicker-prices .ui-datepicker-next:hover {
+    background: #f8fafc;
+}
+
+/* Calendar Grid - Generous Spacing */
+.vie-datepicker-prices .ui-datepicker-calendar {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 4px;
+}
+
+.vie-datepicker-prices .ui-datepicker-calendar th {
+    padding: 8px 0;
+    font-size: 11px;
+    font-weight: 500;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Day Cell - Clean & Airy */
+.vie-datepicker-prices .ui-datepicker-calendar td {
+    padding: 0;
+}
+
+.vie-datepicker-prices .ui-datepicker-calendar td a,
+.vie-datepicker-prices .ui-datepicker-calendar td span {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* min-height: 40px; */
+    padding: 6px 2px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    gap: 2px;
+}
+
+/* Expand only when has price */
+.vie-datepicker-prices td.vie-price-injected a {
+    min-height: 48px;
+    padding: 5px 2px 4px;
+}
+
+.vie-datepicker-prices .ui-datepicker-calendar td a:hover {
+    background: #f8fafc;
+    transform: scale(1.02);
+}
+
+/* ===== DAY NUMBER - Primary Focus (Calendar only) ===== */
+.vie-datepicker-prices .vie-day-number {
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+    line-height: 1;
+}
+
+/* ===== CALENDAR PRICE DISPLAY - Full Format ===== */
+
+/* Combo Price - Primary (Calendar only) */
+.vie-datepicker-prices .vie-day-price.vie-price-combo {
+    font-size: 8px;
+    font-weight: 600;
+    color: #dc2626;
+    background: transparent;
+    padding: 0;
+    white-space: nowrap;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+/* Room Price - Secondary (Calendar only) */
+.vie-datepicker-prices .vie-day-price.vie-price-room {
+    font-size: 7px;
+    font-weight: 400;
+    color: #94a3b8;
+    background: transparent;
+    padding: 0;
+    white-space: nowrap;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+/* Strikethrough for room when combo exists */
+.vie-datepicker-prices .vie-day-price.vie-price-strikethrough {
+    text-decoration: line-through;
+    color: #cbd5e1;
+}
+
+/* Single price (no combo) - show as primary */
+.vie-datepicker-prices .vie-day-price:only-of-type.vie-price-room {
+    font-size: 8px;
+    font-weight: 600;
+    color: #dc2626;
+    text-decoration: none;
+}
+
+/* ===== WEEKEND - Subtle warm tint ===== */
+.vie-datepicker-prices td.vie-day-weekend a {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.vie-datepicker-prices td.vie-day-weekend .vie-day-number {
+    color: #92400e;
+}
+
+.vie-datepicker-prices td.vie-day-weekend .vie-price-combo {
+    color: #b45309;
+}
+
+/* ===== STATES ===== */
+
+/* Sold out */
+.vie-datepicker-prices td.vie-day-sold-out,
+.vie-datepicker-prices td.vie-day-stop-sell {
+    opacity: 0.4;
+}
+
+.vie-datepicker-prices td.vie-day-sold-out .vie-day-number {
+    text-decoration: line-through;
+}
+
+.vie-price-sold-out {
+    font-size: 8px !important;
+    color: #e2e8f0 !important;
+}
+
+/* Past days */
+.vie-datepicker-prices td.vie-day-past {
+    opacity: 0.3;
+}
+
+/* Other month */
+.vie-datepicker-prices .ui-datepicker-other-month {
+    opacity: 0.25;
+}
+
+/* Today */
+.vie-datepicker-prices .ui-state-highlight {
+    background: #f1f5f9;
+}
+
+.vie-datepicker-prices .ui-state-highlight::before {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--vie-primary);
+    border-radius: 50%;
+}
+
+/* Selected/Active */
+.vie-datepicker-prices .ui-state-active {
+    background: var(--vie-primary) !important;
+    box-shadow: 0 4px 12px -2px rgba(var(--vie-primary-rgb), 0.4);
+}
+
+.vie-datepicker-prices .ui-state-active .vie-day-number {
+    color: #fff;
     font-weight: 600;
 }
 
+.vie-datepicker-prices .ui-state-active .vie-price-combo,
+.vie-datepicker-prices .ui-state-active .vie-price-room {
+    color: rgba(255,255,255,0.85);
+}
+
+/* Legacy datepicker styles (non-price version) */
 .ui-datepicker td a,
 .ui-datepicker td span {
     text-align: center;
@@ -1231,258 +1473,78 @@ body.vie-modal-open {
     .vie-breakdown-row { font-size: 12px; flex-wrap: wrap; }
     .vie-weekend-row { margin: 4px -4px; padding: 6px; }
     .vie-summary-row.vie-summary-total .vie-summary-value { font-size: 20px; }
-}
-
-/* ===== PRICING DATEPICKER - ALWAYS VISIBLE PRICES ===== */
-
-/* Base datepicker container */
-.ui-datepicker.vie-pricing-dp {
-    width: 340px;
-    font-family: inherit;
-    background: #fff;
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-    padding: 0;
-    z-index: 999999 !important;
-}
-
-/* Header */
-.vie-pricing-dp .ui-datepicker-header {
-    padding: 14px 16px;
-    background: linear-gradient(135deg, var(--vie-primary) 0%, #1e40af 100%);
-    border: none;
-    border-radius: 12px 12px 0 0;
-}
-
-.vie-pricing-dp .ui-datepicker-title {
-    color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.vie-pricing-dp .ui-datepicker-prev,
-.vie-pricing-dp .ui-datepicker-next {
-    top: 50%;
-    transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.vie-pricing-dp .ui-datepicker-prev:hover,
-.vie-pricing-dp .ui-datepicker-next:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-.vie-pricing-dp .ui-datepicker-prev span,
-.vie-pricing-dp .ui-datepicker-next span {
-    display: none;
-}
-
-.vie-pricing-dp .ui-datepicker-prev::after {
-    content: '‹';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 22px;
-    color: #fff;
-    font-weight: 300;
-}
-
-.vie-pricing-dp .ui-datepicker-next::after {
-    content: '›';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 22px;
-    color: #fff;
-    font-weight: 300;
-}
-
-/* Calendar table */
-.vie-pricing-dp .ui-datepicker-calendar {
-    margin: 0;
-    padding: 8px;
-    border-collapse: separate;
-    border-spacing: 3px;
-    width: 100%;
-}
-
-.vie-pricing-dp .ui-datepicker-calendar th {
-    padding: 8px 0;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--vie-text-muted);
-    text-transform: uppercase;
-}
-
-/* ===== DAY CELL - TWO PART VERTICAL LAYOUT ===== */
-.vie-pricing-dp .ui-datepicker-calendar td {
-    padding: 0;
-    text-align: center;
-    vertical-align: top;
-}
-
-.vie-pricing-dp .ui-datepicker-calendar td a,
-.vie-pricing-dp .ui-datepicker-calendar td span.ui-state-default {
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 56px;
-    padding: 4px 2px;
-    border-radius: 8px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    transition: all 0.15s ease;
-    text-decoration: none;
-    line-height: 1.2;
-}
-
-/* Day number - Top part */
-.vie-pricing-dp .day-number {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--vie-text);
-    margin-bottom: 2px;
-}
-
-/* Price label - Bottom part (ALWAYS VISIBLE) */
-.vie-pricing-dp .day-price-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #dc2626;
-    background: #fef2f2;
-    padding: 2px 4px;
-    border-radius: 4px;
-    min-width: 32px;
-    text-align: center;
-    line-height: 1;
-}
-
-/* Weekend price - Higher */
-.vie-pricing-dp .day-price-label.weekend {
-    color: #ea580c;
-    background: #fff7ed;
-}
-
-/* Hover state */
-.vie-pricing-dp .ui-datepicker-calendar td a:hover {
-    background: var(--vie-primary);
-    border-color: var(--vie-primary);
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-
-.vie-pricing-dp .ui-datepicker-calendar td a:hover .day-number {
-    color: #fff;
-}
-
-.vie-pricing-dp .ui-datepicker-calendar td a:hover .day-price-label {
-    background: rgba(255,255,255,0.2);
-    color: #fff;
-}
-
-/* Selected/Active state */
-.vie-pricing-dp .ui-datepicker-calendar td .ui-state-active {
-    background: var(--vie-primary);
-    border-color: var(--vie-primary);
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
-}
-
-.vie-pricing-dp .ui-datepicker-calendar td .ui-state-active .day-number {
-    color: #fff;
-}
-
-.vie-pricing-dp .ui-datepicker-calendar td .ui-state-active .day-price-label {
-    background: rgba(255,255,255,0.25);
-    color: #fff;
-}
-
-/* Today highlight */
-.vie-pricing-dp .ui-datepicker-calendar td .ui-state-highlight {
-    border-color: var(--vie-primary);
-    background: #eff6ff;
-}
-
-/* ===== SOLD OUT / UNAVAILABLE ===== */
-.vie-pricing-dp td.vie-dp-soldout a,
-.vie-pricing-dp td.vie-dp-soldout span {
-    background: #f1f5f9 !important;
-    border-color: #e2e8f0 !important;
-    cursor: not-allowed !important;
-    opacity: 0.6;
-}
-
-.vie-pricing-dp td.vie-dp-soldout .day-number {
-    color: #94a3b8;
-}
-
-.vie-pricing-dp td.vie-dp-soldout .day-price-label {
-    text-decoration: line-through;
-    color: #cbd5e1;
-    background: transparent;
-}
-
-/* Diagonal stripes for sold out */
-.vie-pricing-dp td.vie-dp-soldout::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: repeating-linear-gradient(
-        -45deg,
-        transparent,
-        transparent 4px,
-        rgba(148, 163, 184, 0.1) 4px,
-        rgba(148, 163, 184, 0.1) 8px
-    );
-    pointer-events: none;
-    border-radius: 8px;
-}
-
-/* Weekend background */
-.vie-pricing-dp td.vie-dp-weekend a {
-    background: #fffbeb;
-    border-color: #fcd34d;
-}
-
-/* ===== MOBILE RESPONSIVE ===== */
-@media (max-width: 767px) {
-    .ui-datepicker.vie-pricing-dp {
-        width: 100%;
-        max-width: 320px;
+    
+    /* ===== DATEPICKER MOBILE ===== */
+    #ui-datepicker-div.vie-datepicker-prices {
+        min-width: 320px;
+        max-width: calc(100vw - 16px);
+        padding: 10px;
         border-radius: 12px;
     }
     
-    .vie-pricing-dp .ui-datepicker-calendar {
-        padding: 6px;
+    .vie-datepicker-prices .ui-datepicker-header {
+        padding: 0 0 10px;
+        margin-bottom: 4px;
+    }
+    
+    .vie-datepicker-prices .ui-datepicker-calendar {
         border-spacing: 2px;
     }
     
-    .vie-pricing-dp .ui-datepicker-calendar td a,
-    .vie-pricing-dp .ui-datepicker-calendar td span.ui-state-default {
-        width: 38px;
-        height: 48px;
+    .vie-datepicker-prices .ui-datepicker-calendar th {
+        padding: 4px 0;
+        font-size: 9px;
+    }
+    
+    .vie-datepicker-prices .ui-datepicker-calendar td a,
+    .vie-datepicker-prices .ui-datepicker-calendar td span {
         padding: 3px 1px;
         border-radius: 6px;
     }
     
-    .vie-pricing-dp .day-number {
-        font-size: 12px;
+    .vie-datepicker-prices td.vie-price-injected a {
+        min-height: 40px;
     }
     
-    /* Mobile: Smaller price but STILL VISIBLE */
-    .vie-pricing-dp .day-price-label {
-        font-size: 8px;
-        padding: 1px 3px;
-        min-width: 28px;
+    .vie-datepicker-prices .vie-day-number {
+        font-size: 11px;
+    }
+    
+    .vie-datepicker-prices .vie-day-price.vie-price-combo,
+    .vie-datepicker-prices .vie-day-price:only-of-type.vie-price-room {
+        font-size: 6px;
+    }
+    
+    .vie-datepicker-prices .vie-day-price.vie-price-room {
+        font-size: 5px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+    #ui-datepicker-div.vie-datepicker-prices {
+        min-width: 290px;
+        padding: 8px;
+    }
+    
+    .vie-datepicker-prices .ui-datepicker-calendar {
+        border-spacing: 1px;
+    }
+    
+    .vie-datepicker-prices td.vie-price-injected a {
+        min-height: 36px;
+    }
+    
+    .vie-datepicker-prices .vie-day-number {
+        font-size: 10px;
+    }
+    
+    .vie-datepicker-prices .vie-day-price.vie-price-combo,
+    .vie-datepicker-prices .vie-day-price:only-of-type.vie-price-room {
+        font-size: 5px;
+    }
+    
+    .vie-datepicker-prices .vie-day-price.vie-price-room {
+        display: none; /* Hide room price on very small screens */
     }
 }

@@ -144,6 +144,13 @@ class Vie_Hotel_Rooms_Shortcode
         ?>
         <div class="vie-room-listing" data-hotel-id="<?php echo esc_attr($hotel_id); ?>"
             data-view="<?php echo esc_attr($atts['view']); ?>">
+            
+            <?php // Fix hotelId for calendar prices - update via inline script ?>
+            <script>
+            if (typeof vieBooking !== 'undefined') {
+                vieBooking.hotelId = <?php echo absint($hotel_id); ?>;
+            }
+            </script>
 
             <?php if ($atts['show_filters'] === 'yes'): ?>
                 <!-- Booking Filters -->

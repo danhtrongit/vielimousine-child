@@ -32,13 +32,17 @@ class Vie_Hotel_Rooms_Frontend_Ajax
         add_action('wp_ajax_vie_get_room_detail', array($this, 'get_room_detail'));
         add_action('wp_ajax_nopriv_vie_get_room_detail', array($this, 'get_room_detail'));
 
+        // Calendar pricing endpoint (for datepicker price display)
+        add_action('wp_ajax_vie_get_calendar_prices', array($this, 'get_calendar_prices'));
+        add_action('wp_ajax_nopriv_vie_get_calendar_prices', array($this, 'get_calendar_prices'));
+
         // Fix 400 Error: Add checkout process handler
         add_action('wp_ajax_vie_process_checkout', array($this, 'process_checkout'));
         add_action('wp_ajax_nopriv_vie_process_checkout', array($this, 'process_checkout'));
-        
-        // Monthly pricing for datepicker
-        add_action('wp_ajax_vie_get_monthly_pricing', array($this, 'get_monthly_pricing'));
-        add_action('wp_ajax_nopriv_vie_get_monthly_pricing', array($this, 'get_monthly_pricing'));
+
+        // SePay: Update booking info before payment
+        add_action('wp_ajax_vie_update_booking_info', array($this, 'update_booking_info'));
+        add_action('wp_ajax_nopriv_vie_update_booking_info', array($this, 'update_booking_info'));
     }
 
     /**
@@ -464,6 +468,70 @@ class Vie_Hotel_Rooms_Frontend_Ajax
     }
 
     /**
+     * Update booking customer info before SePay payment
+     * This keeps booking in pending_payment status until payment is verified
+     */
+    public function update_booking_info()
+    {
+        check_ajax_referer('vie_checkout_action', 'nonce');
+
+        $booking_hash = sanitize_text_field($_POST['booking_hash'] ?? '');
+        $customer_name = sanitize_text_field($_POST['customer_name'] ?? '');
+        $customer_phone = sanitize_text_field($_POST['customer_phone'] ?? '');
+        $customer_email = sanitize_email($_POST['customer_email'] ?? '');
+        $customer_note = sanitize_textarea_field($_POST['customer_note'] ?? '');
+
+        if (empty($booking_hash)) {
+            wp_send_json_error(array('message' => __('Thiếu mã đặt phòng', 'flavor')));
+        }
+
+        if (empty($customer_name) || empty($customer_phone)) {
+            wp_send_json_error(array('message' => __('Vui lòng điền họ tên và số điện thoại', 'flavor')));
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . 'hotel_bookings';
+
+        // Check booking exists and is pending_payment
+        $booking = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$table} WHERE booking_hash = %s",
+            $booking_hash
+        ));
+
+        if (!$booking) {
+            wp_send_json_error(array('message' => __('Không tìm thấy đơn đặt phòng', 'flavor')));
+        }
+
+        if ($booking->status !== 'pending_payment') {
+            wp_send_json_error(array('message' => __('Đơn đặt phòng đã được xử lý', 'flavor')));
+        }
+
+        // Update customer info only (keep status as pending_payment)
+        $result = $wpdb->update(
+            $table,
+            array(
+                'customer_name' => $customer_name,
+                'customer_phone' => $customer_phone,
+                'customer_email' => $customer_email,
+                'customer_note' => $customer_note,
+                'payment_method' => 'sepay', // Mark as SePay payment
+                'updated_at' => current_time('mysql')
+            ),
+            array('booking_hash' => $booking_hash),
+            array('%s', '%s', '%s', '%s', '%s', '%s'),
+            array('%s')
+        );
+
+        if ($result === false) {
+            wp_send_json_error(array('message' => __('Lỗi cập nhật thông tin', 'flavor')));
+        }
+
+        wp_send_json_success(array(
+            'message' => __('Đã lưu thông tin. Vui lòng thanh toán.', 'flavor')
+        ));
+    }
+
+    /**
      * Get pricing for date range
      */
     private function get_pricing_for_dates($room_id, $date_in, $date_out, $price_type, $base_price)
@@ -881,142 +949,144 @@ class Vie_Hotel_Rooms_Frontend_Ajax
             wp_mail($booking_data['customer_email'], $customer_subject, $customer_message);
         }
     }
-    
+
     /**
-     * Get monthly pricing for datepicker display
-     * Returns pricing data for current month + next month
+     * Get calendar prices for a month (AJAX)
+     * Used by datepicker to display prices directly on calendar days
+     * Returns BOTH Room price AND Combo price (lowest) for each day
      */
-    public function get_monthly_pricing()
+    public function get_calendar_prices()
     {
-        check_ajax_referer('vie_booking_nonce', 'nonce');
-        
-        $room_id = absint($_POST['room_id'] ?? 0);
+        $hotel_id = absint($_POST['hotel_id'] ?? 0);
         $year = absint($_POST['year'] ?? date('Y'));
         $month = absint($_POST['month'] ?? date('n'));
-        
-        if (!$room_id) {
-            wp_send_json_error(array('message' => __('Thiếu thông tin phòng', 'flavor')));
+
+        if (!$hotel_id) {
+            wp_send_json_error(array('message' => __('Thiếu thông tin khách sạn', 'flavor')));
         }
-        
+
         global $wpdb;
-        $table_pricing = $wpdb->prefix . 'hotel_room_pricing';
         $table_rooms = $wpdb->prefix . 'hotel_rooms';
-        
-        // Get room base price
-        $room = $wpdb->get_row($wpdb->prepare(
-            "SELECT base_price FROM {$table_rooms} WHERE id = %d",
-            $room_id
+        $table_pricing = $wpdb->prefix . 'hotel_room_pricing';
+
+        // Get all active rooms for this hotel
+        $rooms = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, base_price FROM {$table_rooms} WHERE hotel_id = %d AND status = 'active'",
+            $hotel_id
         ));
-        
-        if (!$room) {
-            wp_send_json_error(array('message' => __('Phòng không tồn tại', 'flavor')));
+
+        if (empty($rooms)) {
+            wp_send_json_success(array('prices' => array()));
         }
-        
-        $base_price = floatval($room->base_price);
-        
-        // Calculate date range (current month + next month)
+
+        // Calculate date range for the month (include days for calendar overlap)
         $start_date = sprintf('%04d-%02d-01', $year, $month);
+        $end_date = date('Y-m-t', strtotime($start_date));
         
-        // Get end of next month
-        $next_month = $month + 1;
-        $next_year = $year;
-        if ($next_month > 12) {
-            $next_month = 1;
-            $next_year++;
+        // Also get next month for calendar overlap
+        $next_month_end = date('Y-m-d', strtotime($end_date . ' +7 days'));
+        // Get previous month overlap too
+        $prev_month_start = date('Y-m-d', strtotime($start_date . ' -7 days'));
+
+        $room_ids = array_map(function($r) { return $r->id; }, $rooms);
+        $room_ids_placeholder = implode(',', array_fill(0, count($room_ids), '%d'));
+        
+        // Build base prices lookup
+        $base_prices = array();
+        foreach ($rooms as $room) {
+            $base_prices[$room->id] = (float) $room->base_price;
         }
-        $end_date = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $next_year, $next_month)));
+
+        // Get all pricing data for the month range
+        $query = $wpdb->prepare(
+            "SELECT date, room_id, price_room, price_combo, status, stock 
+            FROM {$table_pricing} 
+            WHERE room_id IN ({$room_ids_placeholder})
+            AND date >= %s AND date <= %s",
+            array_merge($room_ids, array($prev_month_start, $next_month_end))
+        );
+
+        $pricing_data = $wpdb->get_results($query);
+
+        // Organize pricing by date - track BOTH room and combo prices
+        $prices_by_date = array();
         
-        // Fetch pricing data
-        $pricing_data = $wpdb->get_results($wpdb->prepare(
-            "SELECT date, price_room, price_combo, stock, status 
-             FROM {$table_pricing} 
-             WHERE room_id = %d 
-             AND date >= %s 
-             AND date <= %s
-             ORDER BY date ASC",
-            $room_id,
-            $start_date,
-            $end_date
-        ), ARRAY_A);
-        
-        // Build response keyed by date
-        $result = array();
-        $today = date('Y-m-d');
-        
-        // Create date range
-        $current = new DateTime($start_date);
-        $end = new DateTime($end_date);
-        $end->modify('+1 day');
-        
-        // Index pricing data by date
-        $pricing_index = array();
         foreach ($pricing_data as $row) {
-            $pricing_index[$row['date']] = $row;
+            $date = $row->date;
+            
+            if (!isset($prices_by_date[$date])) {
+                $prices_by_date[$date] = array(
+                    'min_room' => PHP_INT_MAX,
+                    'min_combo' => PHP_INT_MAX,
+                    'status' => 'available',
+                    'sold_out' => true
+                );
+            }
+            
+            // Check if this room-date is available
+            $is_available = !in_array($row->status, array('sold_out', 'stop_sell'));
+            
+            if ($is_available) {
+                $prices_by_date[$date]['sold_out'] = false;
+                
+                // Track minimum ROOM price
+                $room_price = $row->price_room > 0 ? (float) $row->price_room : ($base_prices[$row->room_id] ?? 0);
+                if ($room_price > 0 && $room_price < $prices_by_date[$date]['min_room']) {
+                    $prices_by_date[$date]['min_room'] = $room_price;
+                }
+                
+                // Track minimum COMBO price (if set)
+                if ($row->price_combo > 0) {
+                    $combo_price = (float) $row->price_combo;
+                    if ($combo_price < $prices_by_date[$date]['min_combo']) {
+                        $prices_by_date[$date]['min_combo'] = $combo_price;
+                    }
+                }
+            }
+            
+            // Update status
+            if ($row->status === 'stop_sell') {
+                $prices_by_date[$date]['status'] = 'stop_sell';
+            } elseif ($row->status === 'sold_out' && $prices_by_date[$date]['status'] !== 'stop_sell') {
+                $prices_by_date[$date]['status'] = 'sold_out';
+            }
         }
+
+        // Format response with DUAL prices
+        $result = array();
+        $min_base = !empty($base_prices) ? min(array_values($base_prices)) : 0;
         
-        // Loop through each day
-        while ($current < $end) {
-            $date_str = $current->format('Y-m-d');
+        foreach ($prices_by_date as $date => $info) {
+            // Room price (fallback to base price)
+            $room_price = $info['min_room'] !== PHP_INT_MAX ? $info['min_room'] : $min_base;
             
-            // Skip past dates
-            if ($date_str < $today) {
-                $current->modify('+1 day');
-                continue;
-            }
+            // Combo price (may be null if not set)
+            $combo_price = $info['min_combo'] !== PHP_INT_MAX ? $info['min_combo'] : null;
             
-            if (isset($pricing_index[$date_str])) {
-                $row = $pricing_index[$date_str];
-                $price_room = floatval($row['price_room']) > 0 ? floatval($row['price_room']) : $base_price;
-                $price_combo = floatval($row['price_combo']) > 0 ? floatval($row['price_combo']) : null;
-                $stock = intval($row['stock']);
-                $status = $row['status'];
-            } else {
-                // No custom pricing - use base price
-                $price_room = $base_price;
-                $price_combo = null;
-                $stock = 10; // Default stock
-                $status = 'available';
-            }
-            
-            // Determine availability
-            $is_available = ($stock > 0 && $status !== 'stop_sell');
-            
-            $result[$date_str] = array(
-                'price_room' => $price_room,
-                'price_combo' => $price_combo,
-                'stock' => $stock,
-                'status' => $status,
-                'available' => $is_available,
-                'price_room_formatted' => $this->format_short_price($price_room),
-                'price_combo_formatted' => $price_combo ? $this->format_short_price($price_combo) : null
+            $result[$date] = array(
+                'room' => $room_price,
+                'room_label' => $this->format_price_short($room_price),
+                'combo' => $combo_price,
+                'combo_label' => $combo_price ? $this->format_price_short($combo_price) : null,
+                'sold_out' => $info['sold_out'],
+                'status' => $info['status']
             );
-            
-            $current->modify('+1 day');
         }
-        
+
         wp_send_json_success(array(
-            'pricing' => $result,
-            'base_price' => $base_price,
-            'base_price_formatted' => $this->format_short_price($base_price)
+            'prices' => $result,
+            'month' => $month,
+            'year' => $year
         ));
     }
-    
+
     /**
-     * Format price in short format (e.g., 1.5tr, 800k)
+     * Format price for calendar display
+     * Format: 2.000.000 VNĐ
      */
-    private function format_short_price($amount)
+    private function format_price_short($price)
     {
-        if ($amount >= 1000000) {
-            $formatted = round($amount / 1000000, 1);
-            // Remove .0 if whole number
-            if ($formatted == floor($formatted)) {
-                return intval($formatted) . 'tr';
-            }
-            return $formatted . 'tr';
-        } elseif ($amount >= 1000) {
-            $formatted = round($amount / 1000);
-            return intval($formatted) . 'k';
-        }
-        return number_format($amount, 0, ',', '.');
+        $price = (float) $price;
+        return number_format($price, 0, ',', '.') . ' VNĐ';
     }
 }

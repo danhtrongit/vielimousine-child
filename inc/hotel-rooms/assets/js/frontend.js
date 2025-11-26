@@ -11,8 +11,9 @@
         selectedRoom: null,
         pricingData: null,
         detailSwiper: null,
-        monthlyPricingCache: {},  // Cache pricing data by room_id
-        currentRoomId: null,      // Current room being viewed
+        calendarPrices: {}, // Cache for calendar prices by date (YYYY-MM-DD)
+        calendarPricesLoading: {}, // Track loading state by month
+        pricesPreloaded: false, // Flag to check if initial prices loaded
 
         /**
          * Initialize
@@ -66,7 +67,7 @@
         },
 
         /**
-         * Initialize datepickers
+         * Initialize datepickers with price display
          */
         initDatepickers: function() {
             var self = this;
@@ -81,52 +82,84 @@
                 dateFormat: vieBooking.dateFormat,
                 minDate: today,
                 showAnim: 'fadeIn',
+                showOtherMonths: true,
+                selectOtherMonths: true,
                 beforeShow: function(input, inst) {
-                    // Fix position for inputs inside fixed modal
+                    // Fetch prices for current and next month
+                    var date = $(input).datepicker('getDate') || new Date();
+                    self.fetchCalendarPrices(date.getFullYear(), date.getMonth() + 1);
+                    self.fetchCalendarPrices(date.getFullYear(), date.getMonth() + 2);
+                    
+                    // FIX: Append datepicker to body to avoid modal overflow issues
                     setTimeout(function() {
                         var $input = $(input);
                         var $dpDiv = inst.dpDiv;
                         
-                        // Check if input is inside a fixed modal
-                        if ($input.closest('.vie-modal').length) {
+                        // Add custom class for dual price styling
+                        $dpDiv.addClass('vie-datepicker-prices vie-datepicker-dual');
+                        
+                        // CRITICAL FIX: Position and z-index for modal display
+                        var isInModal = $input.closest('.vie-modal').length > 0;
+                        
+                        if (isInModal) {
                             var inputOffset = $input.offset();
                             var inputHeight = $input.outerHeight();
+                            var dpHeight = $dpDiv.outerHeight() || 350;
+                            var windowHeight = $(window).height();
+                            var scrollTop = $(window).scrollTop();
                             
-                            // Position below the input
+                            // Calculate position - show below or above input
+                            var topPos = inputOffset.top - scrollTop + inputHeight + 8;
+                            var leftPos = inputOffset.left;
+                            
+                            // If datepicker would go below viewport, show above
+                            if (topPos + dpHeight > windowHeight - 20) {
+                                topPos = inputOffset.top - scrollTop - dpHeight - 8;
+                            }
+                            
+                            // Ensure left position doesn't overflow
+                            var dpWidth = $dpDiv.outerWidth() || 340;
+                            if (leftPos + dpWidth > $(window).width() - 10) {
+                                leftPos = $(window).width() - dpWidth - 10;
+                            }
+                            
                             $dpDiv.css({
                                 position: 'fixed',
-                                top: inputOffset.top - $(window).scrollTop() + inputHeight + 5,
-                                left: inputOffset.left,
-                                zIndex: 999999
+                                top: Math.max(10, topPos),
+                                left: Math.max(10, leftPos),
+                                zIndex: 1000000 // Above modal (modal is typically 99999)
                             });
                         } else {
-                            $dpDiv.css({ zIndex: 999999 });
+                            $dpDiv.css({ zIndex: 1000000 });
                         }
-                    }, 0);
+                        
+                        // Inject dual prices after render (with retry for AJAX)
+                        self.injectCalendarPrices($dpDiv);
+                        
+                        // Retry injection after AJAX might have completed
+                        setTimeout(function() {
+                            $dpDiv.find('td.vie-price-injected').removeClass('vie-price-injected');
+                            self.injectCalendarPrices($dpDiv);
+                        }, 500);
+                    }, 10);
+                },
+                beforeShowDay: function(date) {
+                    return self.renderCalendarDay(date);
+                },
+                onChangeMonthYear: function(year, month, inst) {
+                    // Fetch prices for the new month
+                    self.fetchCalendarPrices(year, month);
+                    self.fetchCalendarPrices(year, month + 1);
+                    
+                    // Re-inject prices after month change
+                    setTimeout(function() {
+                        self.injectCalendarPrices(inst.dpDiv);
+                    }, 100);
                 }
             };
-            
-            // Enhanced datepicker with pricing display
-            var pricingBeforeShow = this.datepickerDefaults.beforeShow;
-            this.pricingDatepickerDefaults = $.extend({}, this.datepickerDefaults, {
-                beforeShowDay: this.renderPricingDay.bind(this),
-                onChangeMonthYear: this.handleMonthChange.bind(this),
-                beforeShow: function(input, inst) {
-                    // Call original beforeShow
-                    if (pricingBeforeShow) {
-                        pricingBeforeShow.call(this, input, inst);
-                    }
-                    // Inject price labels after datepicker renders
-                    setTimeout(function() {
-                        self.updateDatepickerPrices();
-                    }, 50);
-                }
-            });
 
-            // Filter datepickers with lazy loading pricing
-            var filterRoomId = vieBooking.defaultRoomId || null;
-            
-            $('#vie-checkin').datepicker($.extend({}, this.pricingDatepickerDefaults, {
+            // Filter datepickers only
+            $('#vie-checkin').datepicker($.extend({}, this.datepickerDefaults, {
                 onSelect: function(date) {
                     var checkin = $(this).datepicker('getDate');
                     var minCheckout = new Date(checkin);
@@ -140,19 +173,9 @@
                 }
             }));
 
-            $('#vie-checkout').datepicker($.extend({}, this.pricingDatepickerDefaults, {
+            $('#vie-checkout').datepicker($.extend({}, this.datepickerDefaults, {
                 minDate: new Date(today.getTime() + 86400000)
             }));
-            
-            // Lazy load pricing when filter input is focused (first time only)
-            var filterPricingLoaded = false;
-            $('#vie-checkin, #vie-checkout').on('focus', function() {
-                if (!filterPricingLoaded && filterRoomId) {
-                    filterPricingLoaded = true;
-                    self.currentRoomId = filterRoomId;
-                    self.fetchMonthlyPricing(filterRoomId);
-                }
-            });
         },
         
         /**
@@ -175,8 +198,58 @@
                 $('#booking-checkout').datepicker('destroy');
             }
             
-            // Re-initialize with pricing display
-            $('#booking-checkin').datepicker($.extend({}, this.pricingDatepickerDefaults, {
+            // PRE-LOAD prices BEFORE initializing datepickers (solve UX issue)
+            var self = this;
+            self.preloadCalendarPrices(function() {
+                // Only initialize datepickers after prices are loaded
+                self.initBookingDatepickersAfterLoad();
+            });
+        },
+        
+        /**
+         * Pre-load calendar prices before showing datepicker
+         */
+        preloadCalendarPrices: function(callback) {
+            var self = this;
+            var today = new Date();
+            var currentMonth = today.getMonth() + 1;
+            var currentYear = today.getFullYear();
+            var nextMonth = currentMonth + 1;
+            var nextYear = currentYear;
+            
+            if (nextMonth > 12) {
+                nextMonth = 1;
+                nextYear++;
+            }
+            
+            var loadCount = 0;
+            var totalToLoad = 2;
+            
+            function checkComplete() {
+                loadCount++;
+                if (loadCount >= totalToLoad) {
+                    self.pricesPreloaded = true;
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }
+            }
+            
+            // Fetch current month
+            self.fetchCalendarPrices(currentYear, currentMonth, checkComplete);
+            // Fetch next month
+            self.fetchCalendarPrices(nextYear, nextMonth, checkComplete);
+        },
+        
+        /**
+         * Initialize booking datepickers after prices are loaded
+         */
+        initBookingDatepickersAfterLoad: function() {
+            var self = this;
+            var today = new Date();
+            
+            // Re-initialize
+            $('#booking-checkin').datepicker($.extend({}, this.datepickerDefaults, {
                 onSelect: function(date) {
                     var checkin = $(this).datepicker('getDate');
                     var minCheckout = new Date(checkin);
@@ -190,17 +263,192 @@
                 }
             }));
 
-            $('#booking-checkout').datepicker($.extend({}, this.pricingDatepickerDefaults, {
+            $('#booking-checkout').datepicker($.extend({}, this.datepickerDefaults, {
                 minDate: new Date(today.getTime() + 86400000),
                 onSelect: function() {
                     self.recalculatePrice();
                 }
             }));
+        },
+
+        /**
+         * Fetch calendar prices for a specific month
+         * @param {number} year
+         * @param {number} month
+         * @param {function} callback - Optional callback when complete
+         */
+        fetchCalendarPrices: function(year, month, callback) {
+            var self = this;
             
-            // Prefetch pricing data for current room
-            if (this.currentRoomId) {
-                this.fetchMonthlyPricing(this.currentRoomId);
+            // Normalize month (handle overflow)
+            if (month > 12) {
+                month = 1;
+                year++;
             }
+            
+            var cacheKey = year + '-' + month;
+            
+            // Skip if already loaded
+            if (this.calendarPricesLoading[cacheKey] === 'loaded') {
+                if (typeof callback === 'function') callback();
+                return;
+            }
+            
+            // Skip if currently loading
+            if (this.calendarPricesLoading[cacheKey] === 'loading') {
+                return;
+            }
+            
+            this.calendarPricesLoading[cacheKey] = 'loading';
+            
+            $.ajax({
+                url: vieBooking.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'vie_get_calendar_prices',
+                    hotel_id: vieBooking.hotelId,
+                    year: year,
+                    month: month
+                },
+                success: function(response) {
+                    if (response.success && response.data.prices) {
+                        $.extend(self.calendarPrices, response.data.prices);
+                        self.refreshOpenDatepickers();
+                    }
+                },
+                complete: function() {
+                    self.calendarPricesLoading[cacheKey] = 'loaded';
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }
+            });
+        },
+
+        /**
+         * Refresh open datepickers to show new prices
+         */
+        refreshOpenDatepickers: function() {
+            var self = this;
+            var $dpDiv = $('#ui-datepicker-div');
+            
+            if ($dpDiv.is(':visible')) {
+                // Remove injected class so prices get re-injected with new data
+                $dpDiv.find('td.vie-price-injected').removeClass('vie-price-injected');
+                self.injectCalendarPrices($dpDiv);
+            }
+        },
+
+        /**
+         * Render calendar day (beforeShowDay callback)
+         */
+        renderCalendarDay: function(date) {
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            var dateStr = this.formatDateISO(date);
+            var priceInfo = this.calendarPrices[dateStr];
+            
+            // Past dates are disabled
+            if (date < today) {
+                return [false, 'vie-day-past', ''];
+            }
+            
+            // Check availability
+            if (priceInfo) {
+                if (priceInfo.sold_out || priceInfo.status === 'sold_out') {
+                    return [false, 'vie-day-sold-out', 'Hết phòng'];
+                }
+                if (priceInfo.status === 'stop_sell') {
+                    return [false, 'vie-day-stop-sell', 'Ngừng bán'];
+                }
+            }
+            
+            // Weekend class for styling
+            var dayOfWeek = date.getDay();
+            var extraClass = '';
+            if (dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6) {
+                extraClass = 'vie-day-weekend';
+            }
+            
+            return [true, extraClass, ''];
+        },
+
+        /**
+         * Inject prices into calendar day cells
+         * Only shows prices, keeps day number clean
+         */
+        injectCalendarPrices: function($dpDiv) {
+            var self = this;
+            
+            $dpDiv.find('td[data-handler="selectDay"]').each(function() {
+                var $cell = $(this);
+                var $link = $cell.find('a');
+                
+                if ($link.length === 0) return;
+                
+                // Skip if already has price (fully processed)
+                if ($link.find('.vie-day-price').length > 0) {
+                    return;
+                }
+                
+                // Get date from cell data attributes
+                var month = parseInt($cell.data('month')) + 1;
+                var year = parseInt($cell.data('year'));
+                
+                // Get day number - use data-date attribute or parse from clean text
+                var $existingNum = $link.find('.vie-day-number');
+                var day;
+                
+                if ($existingNum.length) {
+                    day = parseInt($existingNum.text());
+                } else {
+                    // Get clean day number from original link text
+                    var linkText = $link.text().trim();
+                    day = parseInt(linkText);
+                }
+                
+                if (isNaN(day) || isNaN(month) || isNaN(year)) return;
+                if (day < 1 || day > 31) return; // Validate day range
+                
+                var dateStr = self.formatDateISO(new Date(year, month - 1, day));
+                var priceInfo = self.calendarPrices[dateStr];
+                
+                $cell.addClass('vie-price-injected');
+                
+                // Build HTML - day number + prices (if available)
+                var html = '<span class="vie-day-number">' + day + '</span>';
+                
+                if (priceInfo && !priceInfo.sold_out) {
+                    // Show COMBO price if available
+                    if (priceInfo.combo_label) {
+                        html += '<span class="vie-day-price vie-price-combo">' + priceInfo.combo_label + '</span>';
+                    }
+                    
+                    // Show ROOM price (with strikethrough if combo exists)
+                    if (priceInfo.room_label) {
+                        var roomClass = 'vie-day-price vie-price-room';
+                        if (priceInfo.combo_label) {
+                            roomClass += ' vie-price-strikethrough';
+                        }
+                        html += '<span class="' + roomClass + '">' + priceInfo.room_label + '</span>';
+                    }
+                } else if (priceInfo && priceInfo.sold_out) {
+                    html += '<span class="vie-day-price vie-price-sold-out">Hết phòng</span>';
+                }
+                
+                $link.html(html);
+            });
+        },
+
+        /**
+         * Format date to ISO string (YYYY-MM-DD)
+         */
+        formatDateISO: function(date) {
+            var year = date.getFullYear();
+            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            var day = ('0' + date.getDate()).slice(-2);
+            return year + '-' + month + '-' + day;
         },
 
         /**
@@ -441,27 +689,13 @@
             this.currentStep = 1;
             this.updateStepUI();
             $('#vie-booking-form')[0].reset();
-            $('#vie-price-summary').removeClass('has-data vie-combo-selected').html('<div class="vie-summary-placeholder"><span class="dashicons dashicons-calculator"></span><p>Chọn ngày để xem giá</p></div>');
+            $('#vie-price-summary').removeClass('has-data').html('<div class="vie-summary-placeholder"><span class="dashicons dashicons-calculator"></span><p>Chọn ngày để xem giá</p></div>');
             $('#booking-children-ages').hide().find('.vie-ages-inputs').empty();
 
             // Set room info
             $('#booking-hotel-id').val(vieBooking.hotelId);
             $('#booking-room-id').val(roomId);
             $('.vie-booking-room-name').text(roomName);
-            
-            // Set current room ID for pricing datepicker
-            this.currentRoomId = roomId;
-            
-            // Prefetch pricing data for current and next month
-            var now = new Date();
-            this.fetchMonthlyPricing(roomId, now.getFullYear(), now.getMonth() + 1);
-            var nextMonth = now.getMonth() + 2;
-            var nextYear = now.getFullYear();
-            if (nextMonth > 12) {
-                nextMonth = 1;
-                nextYear++;
-            }
-            this.fetchMonthlyPricing(roomId, nextYear, nextMonth);
 
             // Store filter values before showing popup
             var filterCheckin = $('#vie-checkin').val();
@@ -873,258 +1107,6 @@
                     }
                 });
             });
-        },
-        
-        /**
-         * Fetch monthly pricing data for datepicker
-         */
-        fetchMonthlyPricing: function(roomId, year, month) {
-            var self = this;
-            
-            if (!roomId) return;
-            
-            // Default to current month if not specified
-            var now = new Date();
-            year = year || now.getFullYear();
-            month = month || (now.getMonth() + 1);
-            
-            // Create cache key
-            var cacheKey = roomId + '_' + year + '_' + month;
-            
-            // Check if already cached or loading
-            if (this.monthlyPricingCache[cacheKey]) {
-                return;
-            }
-            
-            // Mark as loading
-            this.monthlyPricingCache[cacheKey] = 'loading';
-            
-            $.ajax({
-                url: vieBooking.ajaxUrl,
-                type: 'POST',
-                data: {
-                    action: 'vie_get_monthly_pricing',
-                    nonce: vieBooking.nonce,
-                    room_id: roomId,
-                    year: year,
-                    month: month
-                },
-                success: function(response) {
-                    if (response.success && response.data.pricing) {
-                        // Store in cache
-                        self.monthlyPricingCache[cacheKey] = response.data.pricing;
-                        
-                        // Refresh datepickers to show prices
-                        if ($('#booking-checkin').hasClass('hasDatepicker')) {
-                            $('#booking-checkin').datepicker('refresh');
-                        }
-                        if ($('#booking-checkout').hasClass('hasDatepicker')) {
-                            $('#booking-checkout').datepicker('refresh');
-                        }
-                        
-                        // Inject price labels
-                        setTimeout(function() {
-                            self.updateDatepickerPrices();
-                        }, 50);
-                    }
-                },
-                error: function() {
-                    // Remove loading marker on error
-                    delete self.monthlyPricingCache[cacheKey];
-                }
-            });
-        },
-        
-        /**
-         * Render pricing info in datepicker day cell
-         * Used as beforeShowDay callback
-         */
-        renderPricingDay: function(date) {
-            var self = this;
-            var dateStr = this.formatDateKey(date);
-            var today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            // Past dates - disabled
-            if (date < today) {
-                return [false, 'vie-dp-past', ''];
-            }
-            
-            // Get pricing data for this date
-            var pricing = this.getPricingForDate(date);
-            
-            if (!pricing) {
-                // No pricing data yet, show default
-                return [true, 'vie-dp-default', ''];
-            }
-            
-            // Check availability
-            if (!pricing.available) {
-                return [false, 'vie-dp-unavailable', 'Hết phòng'];
-            }
-            
-            // Build tooltip
-            var tooltip = '';
-            if (pricing.price_combo) {
-                tooltip = 'Combo: ' + pricing.price_combo_formatted + ' | Room: ' + pricing.price_room_formatted;
-            } else {
-                tooltip = 'Giá: ' + pricing.price_room_formatted;
-            }
-            
-            // Determine price class based on price level
-            var priceClass = 'vie-dp-available';
-            if (pricing.price_combo) {
-                priceClass += ' vie-dp-has-combo';
-            }
-            
-            // Add weekend class
-            var dayOfWeek = date.getDay();
-            if (dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6) {
-                priceClass += ' vie-dp-weekend';
-            }
-            
-            return [true, priceClass, tooltip];
-        },
-        
-        /**
-         * Handle month/year change in datepicker
-         */
-        handleMonthChange: function(year, month, inst) {
-            var self = this;
-            
-            if (this.currentRoomId) {
-                this.fetchMonthlyPricing(this.currentRoomId, year, month);
-                
-                // Also prefetch next month
-                var nextMonth = month + 1;
-                var nextYear = year;
-                if (nextMonth > 12) {
-                    nextMonth = 1;
-                    nextYear++;
-                }
-                this.fetchMonthlyPricing(this.currentRoomId, nextYear, nextMonth);
-            }
-            
-            // Update price labels after month change animation
-            setTimeout(function() {
-                self.updateDatepickerPrices();
-            }, 100);
-        },
-        
-        /**
-         * Get pricing data for a specific date
-         */
-        getPricingForDate: function(date) {
-            var dateStr = this.formatDateKey(date);
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            var cacheKey = this.currentRoomId + '_' + year + '_' + month;
-            
-            var monthData = this.monthlyPricingCache[cacheKey];
-            
-            if (monthData && monthData !== 'loading' && monthData[dateStr]) {
-                return monthData[dateStr];
-            }
-            
-            return null;
-        },
-        
-        /**
-         * Format date to YYYY-MM-DD key
-         */
-        formatDateKey: function(date) {
-            var year = date.getFullYear();
-            var month = ('0' + (date.getMonth() + 1)).slice(-2);
-            var day = ('0' + date.getDate()).slice(-2);
-            return year + '-' + month + '-' + day;
-        },
-        
-        /**
-         * Update datepicker with ALWAYS VISIBLE prices
-         * Two-part layout: day-number + day-price-label
-         */
-        updateDatepickerPrices: function() {
-            var self = this;
-            
-            // Add pricing class to datepicker
-            $('.ui-datepicker').addClass('vie-pricing-dp');
-            
-            $('.ui-datepicker-calendar td').each(function() {
-                var $cell = $(this);
-                var $link = $cell.find('a, span.ui-state-default').first();
-                
-                if ($link.length === 0 || $cell.hasClass('ui-datepicker-other-month')) return;
-                
-                // Skip if already processed
-                if ($link.find('.day-number').length > 0) return;
-                
-                // Get original day text
-                var dayText = $link.text().trim();
-                var day = parseInt(dayText);
-                if (isNaN(day)) return;
-                
-                // Get month/year from datepicker header
-                var $header = $cell.closest('.ui-datepicker').find('.ui-datepicker-title');
-                var monthText = $header.find('.ui-datepicker-month').text();
-                var yearText = $header.find('.ui-datepicker-year').text();
-                
-                var date = new Date(parseInt(yearText), self.getMonthIndex(monthText), day);
-                var pricing = self.getPricingForDate(date);
-                
-                // Check weekend (Fri, Sat, Sun)
-                var dayOfWeek = date.getDay();
-                var isWeekend = (dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6);
-                
-                // Clean cell classes
-                $cell.removeClass('vie-dp-soldout vie-dp-weekend');
-                
-                if (isWeekend) {
-                    $cell.addClass('vie-dp-weekend');
-                }
-                
-                // Build new cell content
-                var priceLabel = '';
-                var weekendClass = isWeekend ? ' weekend' : '';
-                
-                if (pricing) {
-                    if (!pricing.available) {
-                        $cell.addClass('vie-dp-soldout');
-                        priceLabel = pricing.price_combo_formatted || pricing.price_room_formatted;
-                    } else {
-                        // Show best price (Combo if available, else Room)
-                        priceLabel = pricing.price_combo_formatted || pricing.price_room_formatted;
-                    }
-                }
-                
-                // Replace link content with structured HTML
-                var html = '<span class="day-number">' + day + '</span>';
-                if (priceLabel) {
-                    html += '<span class="day-price-label' + weekendClass + '">' + priceLabel + '</span>';
-                }
-                
-                $link.html(html);
-            });
-        },
-        
-        /**
-         * Get month index from Vietnamese month name
-         */
-        getMonthIndex: function(monthName) {
-            var months = {
-                'Tháng 1': 0, 'Tháng Một': 0, 'January': 0, 'Jan': 0,
-                'Tháng 2': 1, 'Tháng Hai': 1, 'February': 1, 'Feb': 1,
-                'Tháng 3': 2, 'Tháng Ba': 2, 'March': 2, 'Mar': 2,
-                'Tháng 4': 3, 'Tháng Tư': 3, 'April': 3, 'Apr': 3,
-                'Tháng 5': 4, 'Tháng Năm': 4, 'May': 4,
-                'Tháng 6': 5, 'Tháng Sáu': 5, 'June': 5, 'Jun': 5,
-                'Tháng 7': 6, 'Tháng Bảy': 6, 'July': 6, 'Jul': 6,
-                'Tháng 8': 7, 'Tháng Tám': 7, 'August': 7, 'Aug': 7,
-                'Tháng 9': 8, 'Tháng Chín': 8, 'September': 8, 'Sep': 8,
-                'Tháng 10': 9, 'Tháng Mười': 9, 'October': 9, 'Oct': 9,
-                'Tháng 11': 10, 'Tháng 11': 10, 'November': 10, 'Nov': 10,
-                'Tháng 12': 11, 'Tháng 12': 11, 'December': 11, 'Dec': 11
-            };
-            return months[monthName] || 0;
         },
 
         /**

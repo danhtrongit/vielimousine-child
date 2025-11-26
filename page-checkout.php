@@ -98,49 +98,116 @@ get_header();
                                 </div>
                             </div>
 
-                            <h2 style="margin-top:40px"><?php _e('Phương thức thanh toán', 'flavor'); ?></h2>
-
-                            <div class="vie-payment-methods">
-                                <label class="vie-payment-option">
-                                    <input type="radio" name="payment_method" value="bank_transfer" checked>
-                                    <span class="vie-payment-label">
-                                        <strong><?php _e('Chuyển khoản ngân hàng', 'flavor'); ?></strong>
-                                        <small><?php _e('Vui lòng chuyển khoản theo thông tin bên dưới', 'flavor'); ?></small>
-                                    </span>
-                                </label>
-
-                                <label class="vie-payment-option">
-                                    <input type="radio" name="payment_method" value="cash">
-                                    <span class="vie-payment-label">
-                                        <strong><?php _e('Thanh toán tại chỗ', 'flavor'); ?></strong>
-                                        <small><?php _e('Thanh toán khi nhận phòng', 'flavor'); ?></small>
-                                    </span>
-                                </label>
-                            </div>
-
-                            <div id="vie-bank-info" class="vie-bank-info">
-                                <h4><?php _e('Thông tin chuyển khoản', 'flavor'); ?></h4>
-                                <p>
-                                    <strong><?php _e('Ngân hàng:', 'flavor'); ?></strong> Vietcombank<br>
-                                    <strong><?php _e('Số tài khoản:', 'flavor'); ?></strong> 1234567890<br>
-                                    <strong><?php _e('Chủ tài khoản:', 'flavor'); ?></strong> Vie Limousine<br>
-                                    <strong><?php _e('Nội dung:', 'flavor'); ?></strong> <span
-                                        id="vie-transfer-content"><?php echo esc_html($booking->booking_code); ?></span>
-                                </p>
-                            </div>
-
                             <div class="vie-form-row" style="margin-top:30px">
                                 <label class="vie-checkbox">
-                                    <input type="checkbox" name="agree_terms" required>
+                                    <input type="checkbox" name="agree_terms" id="agree_terms" required>
                                     <span><?php _e('Tôi đồng ý với điều khoản và chính sách', 'flavor'); ?></span>
                                 </label>
                             </div>
 
                             <button type="submit" class="vie-btn vie-btn-primary vie-btn-lg"
-                                style="width:100%;margin-top:20px">
-                                <?php _e('Xác nhận đặt phòng', 'flavor'); ?>
+                                style="width:100%;margin-top:20px" id="btn-confirm-info">
+                                <?php _e('Xác nhận thông tin & Thanh toán', 'flavor'); ?>
                             </button>
                         </form>
+
+                        <!-- SePay Payment Section (Hidden initially) -->
+                        <div id="vie-sepay-payment" style="display:none;">
+                            <?php
+                            $sepay = vie_sepay();
+                            if ($sepay->is_enabled()):
+                                $bank_account_id = $sepay->get_setting('bank_account');
+                                $bank = $bank_account_id ? $sepay->get_bank_account($bank_account_id) : null;
+                                
+                                if ($bank):
+                                    $remark = $sepay->get_payment_code($booking->id);
+                                    $qr_url = $sepay->generate_qr_url($booking->id, $booking->total_amount);
+                                    $formatted_amount = $sepay->format_currency($booking->total_amount);
+                            ?>
+                            <div class="sepay-checkout-box">
+                                <h2><?php _e('Thanh toán qua chuyển khoản', 'flavor'); ?></h2>
+                                <p class="sepay-subtitle">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
+                                
+                                <div class="sepay-content">
+                                    <!-- QR Code -->
+                                    <div class="sepay-qr">
+                                        <img src="<?php echo esc_url($qr_url); ?>" alt="QR Code" id="sepay-qr-image">
+                                        <a href="<?php echo esc_url($qr_url . '&download=yes'); ?>" class="btn-download-qr" download>
+                                            📥 Tải ảnh QR
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Bank Info -->
+                                    <div class="sepay-info">
+                                        <div class="sepay-bank-logo">
+                                            <img src="<?php echo esc_url($bank['bank']['logo_url']); ?>" alt="<?php echo esc_attr($bank['bank']['short_name']); ?>">
+                                        </div>
+                                        <table class="sepay-table">
+                                            <tr>
+                                                <td>Ngân hàng</td>
+                                                <td><strong><?php echo esc_html($bank['bank']['short_name']); ?></strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Chủ TK</td>
+                                                <td><strong><?php echo esc_html($bank['account_holder_name']); ?></strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Số TK</td>
+                                                <td>
+                                                    <strong id="sepay-account-number"><?php echo esc_html($bank['account_number']); ?></strong>
+                                                    <button type="button" class="btn-copy" onclick="copyText('<?php echo esc_js($bank['account_number']); ?>', this)">📋</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Số tiền</td>
+                                                <td>
+                                                    <strong class="sepay-amount"><?php echo esc_html($formatted_amount); ?></strong>
+                                                    <button type="button" class="btn-copy" onclick="copyText('<?php echo esc_js($booking->total_amount); ?>', this)">📋</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nội dung CK</td>
+                                                <td>
+                                                    <strong id="sepay-remark"><?php echo esc_html($remark); ?></strong>
+                                                    <button type="button" class="btn-copy" onclick="copyText('<?php echo esc_js($remark); ?>', this)">📋</button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <div class="sepay-warning">
+                                            ⚠️ <strong>Lưu ý:</strong> Giữ nguyên nội dung CK <strong><?php echo esc_html($remark); ?></strong> để tự động xác nhận.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Payment Status -->
+                                <div class="sepay-status" id="sepay-status">
+                                    <div class="status-waiting">
+                                        <div class="spinner"></div>
+                                        <span>Đang chờ thanh toán...</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Success Message (Hidden) -->
+                                <div class="sepay-success" id="sepay-success" style="display:none;">
+                                    <div class="success-icon">✅</div>
+                                    <h3>Thanh toán thành công!</h3>
+                                    <p>Mã đặt phòng: <strong><?php echo esc_html($booking->booking_code); ?></strong></p>
+                                    <p>Chúng tôi sẽ liên hệ xác nhận sớm nhất.</p>
+                                    <a href="<?php echo home_url('/'); ?>" class="vie-btn vie-btn-primary">Về trang chủ</a>
+                                </div>
+                            </div>
+                            <?php else: ?>
+                            <div class="sepay-error">
+                                <p>⚠️ Chưa cấu hình tài khoản ngân hàng. Vui lòng liên hệ admin.</p>
+                            </div>
+                            <?php endif; ?>
+                            <?php else: ?>
+                            <div class="sepay-error">
+                                <p>⚠️ Thanh toán online chưa được kích hoạt.</p>
+                            </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -480,93 +547,275 @@ get_header();
     .required {
         color: #ef4444;
     }
-</style>
 
-<!-- SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    /* SePay Checkout Styles */
+    .sepay-checkout-box {
+        margin-top: 30px;
+        padding: 25px;
+        border: 2px solid #3b82f6;
+        border-radius: 12px;
+        background: #f0f9ff;
+    }
+    .sepay-checkout-box h2 {
+        margin: 0 0 8px 0;
+        color: #1e40af;
+    }
+    .sepay-subtitle {
+        color: #6b7280;
+        margin: 0 0 20px 0;
+    }
+    .sepay-content {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+    }
+    .sepay-qr {
+        flex: 0 0 200px;
+        text-align: center;
+    }
+    .sepay-qr img {
+        width: 200px;
+        height: 200px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    .btn-download-qr {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 16px;
+        background: #3b82f6;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 13px;
+    }
+    .sepay-info {
+        flex: 1;
+    }
+    .sepay-bank-logo {
+        margin-bottom: 15px;
+    }
+    .sepay-bank-logo img {
+        max-height: 40px;
+    }
+    .sepay-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .sepay-table td {
+        padding: 10px 0;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 14px;
+    }
+    .sepay-table td:first-child {
+        color: #6b7280;
+        width: 100px;
+    }
+    .sepay-table strong {
+        color: #1f2937;
+    }
+    .sepay-amount {
+        color: #3b82f6 !important;
+        font-size: 18px !important;
+    }
+    .btn-copy {
+        margin-left: 8px;
+        padding: 4px 8px;
+        border: 1px solid #d1d5db;
+        background: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    .btn-copy:hover {
+        background: #f3f4f6;
+    }
+    .btn-copy.copied {
+        background: #d1fae5;
+        border-color: #10b981;
+    }
+    .sepay-warning {
+        margin-top: 15px;
+        padding: 12px;
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #92400e;
+    }
+    .sepay-status {
+        margin-top: 20px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 8px;
+        text-align: center;
+    }
+    .status-waiting {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #6b7280;
+    }
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e5e7eb;
+        border-top-color: #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .sepay-success {
+        text-align: center;
+        padding: 30px;
+    }
+    .success-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+    .sepay-success h3 {
+        color: #059669;
+        margin: 0 0 15px 0;
+    }
+    .sepay-error {
+        padding: 20px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        color: #dc2626;
+    }
+    @media (max-width: 640px) {
+        .sepay-content {
+            flex-direction: column;
+            align-items: center;
+        }
+        .sepay-qr {
+            flex: none;
+        }
+        .sepay-info {
+            width: 100%;
+        }
+    }
+</style>
 
 <script>
     jQuery(function ($) {
-        // Payment method change
-        $('input[name="payment_method"]').on('change', function () {
-            if ($(this).val() === 'bank_transfer') {
-                $('#vie-bank-info').addClass('active');
-            } else {
-                $('#vie-bank-info').removeClass('active');
-            }
-        }).trigger('change');
+        var paymentCheckInterval = null;
+        var isPaid = false;
 
-        // Form submit with SweetAlert2
+        // Copy text function
+        window.copyText = function(text, btn) {
+            navigator.clipboard.writeText(text).then(function() {
+                $(btn).addClass('copied').text('✓');
+                setTimeout(function() {
+                    $(btn).removeClass('copied').text('📋');
+                }, 2000);
+            });
+        };
+
+        // Form submit - Show SePay payment
         $('#vie-checkout-form').on('submit', function (e) {
             e.preventDefault();
 
-            var $btn = $(this).find('button[type="submit"]');
+            var $btn = $('#btn-confirm-info');
             var $form = $(this);
+
+            // Validate
+            if (!$form.find('input[name="customer_name"]').val().trim()) {
+                alert('Vui lòng nhập họ tên');
+                return;
+            }
+            if (!$form.find('input[name="customer_phone"]').val().trim()) {
+                alert('Vui lòng nhập số điện thoại');
+                return;
+            }
+            if (!$('#agree_terms').is(':checked')) {
+                alert('Vui lòng đồng ý với điều khoản');
+                return;
+            }
 
             $btn.prop('disabled', true).text('Đang xử lý...');
 
-            // Collect form data for update
-            var formData = {
-                action: 'vie_process_checkout',
-                nonce: $('input[name="checkout_nonce"]').val(),
-                booking_hash: '<?php echo esc_js($booking_hash); ?>',
-                payment_method: $('input[name="payment_method"]:checked').val(),
-                // Customer info for update
-                customer_name: $form.find('input[name="customer_name"]').val(),
-                customer_phone: $form.find('input[name="customer_phone"]').val(),
-                customer_email: $form.find('input[name="customer_email"]').val(),
-                customer_note: $form.find('textarea[name="customer_note"]').val()
-            };
-
+            // Update customer info via AJAX
             $.ajax({
                 url: '<?php echo admin_url('admin-ajax.php'); ?>',
                 type: 'POST',
-                data: formData,
+                data: {
+                    action: 'vie_update_booking_info',
+                    nonce: $('input[name="checkout_nonce"]').val(),
+                    booking_hash: '<?php echo esc_js($booking_hash); ?>',
+                    customer_name: $form.find('input[name="customer_name"]').val(),
+                    customer_phone: $form.find('input[name="customer_phone"]').val(),
+                    customer_email: $form.find('input[name="customer_email"]').val(),
+                    customer_note: $form.find('textarea[name="customer_note"]').val()
+                },
                 success: function (response) {
                     if (response.success) {
-                        // SweetAlert2 Success Modal
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Đặt phòng thành công!',
-                            html: '<p>Mã đơn hàng của bạn là: <strong>' + response.data.booking_code + '</strong></p>' +
-                                '<p style="margin-top:10px;color:#6b7280;font-size:14px;">Chúng tôi sẽ liên hệ xác nhận trong thời gian sớm nhất.</p>',
-                            confirmButtonText: 'Về trang chủ',
-                            confirmButtonColor: '#3b82f6',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '<?php echo home_url('/'); ?>';
-                            }
-                        });
+                        // Hide form, show SePay payment
+                        $('#vie-checkout-form').slideUp(300);
+                        $('#vie-sepay-payment').slideDown(300);
+                        
+                        // Start payment checking
+                        startPaymentCheck();
                     } else {
-                        // SweetAlert2 Error Modal
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Có lỗi xảy ra',
-                            text: response.data ? response.data.message : 'Vui lòng thử lại sau',
-                            confirmButtonText: 'Đóng',
-                            confirmButtonColor: '#ef4444'
-                        });
-                        $btn.prop('disabled', false).text('Xác nhận đặt phòng');
+                        alert(response.data ? response.data.message : 'Có lỗi xảy ra');
+                        $btn.prop('disabled', false).text('Xác nhận thông tin & Thanh toán');
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error('AJAX Error:', status, error);
-                    console.error('Response:', xhr.responseText);
-
-                    // SweetAlert2 Network Error Modal
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi kết nối',
-                        text: 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng và thử lại.',
-                        confirmButtonText: 'Đóng',
-                        confirmButtonColor: '#ef4444'
-                    });
-                    $btn.prop('disabled', false).text('Xác nhận đặt phòng');
+                error: function () {
+                    alert('Lỗi kết nối. Vui lòng thử lại.');
+                    $btn.prop('disabled', false).text('Xác nhận thông tin & Thanh toán');
                 }
             });
         });
+
+        // Start payment status checking
+        function startPaymentCheck() {
+            // Check every 5 seconds
+            paymentCheckInterval = setInterval(function() {
+                if (isPaid) {
+                    clearInterval(paymentCheckInterval);
+                    return;
+                }
+                checkPaymentStatus();
+            }, 5000);
+            
+            // Also check immediately
+            checkPaymentStatus();
+        }
+
+        // Check payment status via AJAX
+        function checkPaymentStatus() {
+            $.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'POST',
+                data: {
+                    action: 'vie_check_booking_payment',
+                    nonce: '<?php echo wp_create_nonce('vie_check_payment'); ?>',
+                    booking_id: <?php echo intval($booking->id); ?>,
+                    booking_hash: '<?php echo esc_js($booking_hash); ?>'
+                },
+                success: function (response) {
+                    if (response.success && response.data.is_paid) {
+                        isPaid = true;
+                        clearInterval(paymentCheckInterval);
+                        showPaymentSuccess();
+                    }
+                }
+            });
+        }
+
+        // Show payment success
+        function showPaymentSuccess() {
+            $('#sepay-status').hide();
+            $('.sepay-content').hide();
+            $('.sepay-subtitle').hide();
+            $('.sepay-checkout-box h2').text('🎉 Thanh toán thành công!');
+            $('#sepay-success').fadeIn(500);
+        }
     });
 </script>
 

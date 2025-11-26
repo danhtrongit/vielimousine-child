@@ -72,11 +72,11 @@ if (!defined('ABSPATH')) exit;
                 <div class="row">
                     <div class="col">
                         <label for="modal-price-room"><?php _e('Giá Room', 'viechild'); ?></label>
-                        <input type="number" id="modal-price-room" name="price_room" min="0" step="10000" placeholder="VNĐ">
+                        <input type="number" id="modal-price-room" name="price_room" min="0" step="1000" placeholder="VNĐ">
                     </div>
                     <div class="col">
                         <label for="modal-price-combo"><?php _e('Giá Combo', 'viechild'); ?></label>
-                        <input type="number" id="modal-price-combo" name="price_combo" min="0" step="10000" placeholder="VNĐ">
+                        <input type="number" id="modal-price-combo" name="price_combo" min="0" step="1000" placeholder="VNĐ">
                     </div>
                 </div>
                 <div class="row">
