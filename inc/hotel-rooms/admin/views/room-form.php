@@ -80,7 +80,7 @@ if (!is_array($gallery_ids)) $gallery_ids = [];
                     <div class="postbox">
                         <div class="postbox-header"><h2><?php _e('Giá cơ bản', 'viechild'); ?></h2></div>
                         <div class="inside">
-                            <input type="number" name="base_price" id="base_price" value="<?php echo esc_attr($room->base_price ?? 0); ?>" min="0" step="10000" style="width:100%;font-size:16px;padding:8px">
+                            <input type="number" name="base_price" id="base_price" value="<?php echo esc_attr($room->base_price ?? 0); ?>" min="0" step="1000" style="width:100%;font-size:16px;padding:8px">
                             <p class="description"><?php _e('Giá mặc định khi chưa set lịch (VNĐ)', 'viechild'); ?></p>
                         </div>
                     </div>

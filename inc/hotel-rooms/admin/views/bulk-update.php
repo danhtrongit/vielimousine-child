@@ -135,11 +135,11 @@ if (!defined('ABSPATH')) exit;
                                     </td>
                                     <td class="col-price">
                                         <input type="number" name="daily_rules[<?php echo $day_num; ?>][price_room]" 
-                                               min="0" step="10000" class="day-price-room" placeholder="<?php _e('Để trống = giữ nguyên', 'viechild'); ?>">
+                                               min="0" step="1000" class="day-price-room" placeholder="<?php _e('Để trống = giữ nguyên', 'viechild'); ?>">
                                     </td>
                                     <td class="col-price">
                                         <input type="number" name="daily_rules[<?php echo $day_num; ?>][price_combo]" 
-                                               min="0" step="10000" class="day-price-combo" placeholder="<?php _e('Để trống = giữ nguyên', 'viechild'); ?>">
+                                               min="0" step="1000" class="day-price-combo" placeholder="<?php _e('Để trống = giữ nguyên', 'viechild'); ?>">
                                     </td>
                                     <td class="col-stock">
                                         <input type="number" name="daily_rules[<?php echo $day_num; ?>][stock]" 
