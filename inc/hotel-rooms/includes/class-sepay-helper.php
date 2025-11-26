@@ -461,10 +461,52 @@ class Vie_SePay_Helper
         if (isset($response['status']) && $response['status'] === 'success') {
             update_option(self::OPT_WEBHOOK_ID, $response['data']['id'] ?? $webhook_id);
             update_option(self::OPT_WEBHOOK_API_KEY, $api_key);
+            
+            // Auto configure payment code prefix
+            $this->ensure_pay_code_prefix();
+            
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Ensure Pay Code Prefix matches SePay configuration
+     */
+    private function ensure_pay_code_prefix()
+    {
+        $prefixes = $this->get_pay_code_prefixes();
+        
+        // If no prefixes or first one is invalid, try to update
+        if (empty($prefixes)) {
+            $default_prefix = 'VL'; // Use VL as default
+            
+            $response = $this->make_request('company/configurations', 'PATCH', [
+                'payment_code_formats' => [
+                    [
+                        'prefix' => $default_prefix,
+                        'suffix_from' => 1,
+                        'suffix_to' => 10, // Allow variable length
+                        'character_type' => 'NumberAndLetter',
+                        'is_active' => 1,
+                    ],
+                ],
+            ]);
+            
+            // Update local settings
+            $settings = $this->get_settings();
+            $settings['pay_code_prefix'] = $default_prefix;
+            $this->update_settings($settings);
+        } else {
+            // Sync first valid prefix to local settings
+            $prefix = $prefixes[0]['prefix'];
+            $settings = $this->get_settings();
+            if (($settings['pay_code_prefix'] ?? '') !== $prefix) {
+                $settings['pay_code_prefix'] = $prefix;
+                $this->update_settings($settings);
+            }
+        }
     }
 
     /**
