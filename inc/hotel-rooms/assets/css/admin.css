@@ -1,0 +1,190 @@
+/**
+ * Hotel Rooms Admin Styles
+ * Tối ưu sử dụng WP native classes, chỉ custom khi cần thiết
+ * 
+ * @package VieHotelRooms
+ */
+
+/* ===== Required Indicator ===== */
+.required { color: #d63638; }
+
+/* ===== Status Badges ===== */
+.vie-status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+.vie-status-active { background: #d4edda; color: #155724; }
+.vie-status-inactive { background: #f8d7da; color: #721c24; }
+.vie-status-draft { background: #e2e3e5; color: #383d41; }
+
+/* ===== Two Column Layout (Form) ===== */
+#poststuff .vie-columns { display: flex; gap: 20px; }
+#poststuff .vie-col-main { flex: 1; min-width: 0; }
+#poststuff .vie-col-side { width: 280px; }
+
+/* ===== Gallery Grid ===== */
+.vie-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+.vie-gallery-item { position: relative; aspect-ratio: 1; border-radius: 3px; overflow: hidden; border: 1px solid #c3c4c7; }
+.vie-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.vie-gallery-item .remove { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,.7); color: #fff; border: 0; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 12px; line-height: 16px; }
+.vie-gallery-item .remove:hover { background: #d63638; }
+
+/* ===== Image Preview ===== */
+.vie-image-preview { min-height: 120px; background: #f0f0f1; border-radius: 3px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.vie-image-preview img { max-width: 100%; height: auto; border-radius: 3px; }
+
+/* ===== Surcharges Repeater ===== */
+.vie-repeater-item { background: #f6f7f7; border: 1px solid #c3c4c7; margin-bottom: 10px; }
+.vie-repeater-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #fff; border-bottom: 1px solid #c3c4c7; cursor: move; }
+.vie-repeater-header strong { font-size: 13px; }
+.vie-repeater-body { padding: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.vie-repeater-body .field { display: flex; flex-direction: column; gap: 4px; }
+.vie-repeater-body .field label { font-size: 11px; font-weight: 600; color: #1d2327; }
+.vie-repeater-body .field input,
+.vie-repeater-body .field select { width: 100%; }
+.vie-repeater-body .inline-fields { display: flex; gap: 5px; align-items: center; }
+.vie-repeater-body .inline-fields input { width: 60px; }
+.vie-repeater-body .checkbox-group { flex-direction: row; gap: 12px; flex-wrap: wrap; }
+.vie-repeater-body .checkbox-group label { font-weight: normal; display: inline-flex; align-items: center; gap: 4px; }
+
+/* ===== Calendar Header ===== */
+.vie-cal-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
+.vie-cal-toolbar .selectors { display: flex; gap: 15px; align-items: center; }
+.vie-cal-toolbar .selectors label { font-weight: 500; margin-right: 5px; }
+.vie-cal-toolbar .selectors select { min-width: 180px; }
+.vie-cal-legend { display: flex; gap: 12px; font-size: 12px; }
+.vie-cal-legend span { display: flex; align-items: center; gap: 4px; }
+.vie-cal-legend span::before { content: ''; width: 10px; height: 10px; border-radius: 2px; }
+.vie-cal-legend .available::before { background: #00a32a; }
+.vie-cal-legend .limited::before { background: #dba617; }
+.vie-cal-legend .sold-out::before { background: #d63638; }
+.vie-cal-legend .stop-sell::before { background: #646970; }
+
+/* ===== FullCalendar Overrides ===== */
+#vie-pricing-calendar { min-height: 500px; }
+.fc .fc-toolbar-title { font-size: 1.2em !important; }
+.fc-event { cursor: pointer; font-size: 11px; }
+.fc-daygrid-day.fc-day-today { background: #fffbe6 !important; }
+
+/* ===== Modal (using WP thickbox style) ===== */
+.vie-modal { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100050; display: flex; align-items: center; justify-content: center; }
+.vie-modal-box { background: #fff; width: 90%; max-width: 480px; max-height: 85vh; overflow: auto; box-shadow: 0 5px 30px rgba(0,0,0,.3); }
+.vie-modal-box .header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #dcdcde; background: #f6f7f7; }
+.vie-modal-box .header h3 { margin: 0; font-size: 14px; }
+.vie-modal-box .header .close { background: 0; border: 0; font-size: 20px; cursor: pointer; color: #646970; }
+.vie-modal-box .header .close:hover { color: #d63638; }
+.vie-modal-box .body { padding: 16px; }
+.vie-modal-box .body .row { display: flex; gap: 12px; margin-bottom: 12px; }
+.vie-modal-box .body .row .col { flex: 1; }
+.vie-modal-box .body .row label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 13px; }
+.vie-modal-box .body .row input,
+.vie-modal-box .body .row select { width: 100%; }
+.vie-modal-box .footer { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid #dcdcde; background: #f6f7f7; }
+
+/* ===== Bulk Update ===== */
+.vie-bulk-container { max-width: 860px; }
+.vie-bulk-step { margin-bottom: 0; }
+.vie-bulk-step .postbox { margin-bottom: 15px; }
+.vie-bulk-step .hndle { display: flex; align-items: center; gap: 10px; }
+.vie-bulk-step .step-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: #2271b1; color: #fff; border-radius: 50%; font-size: 12px; font-weight: 600; }
+.vie-bulk-step .inside { padding: 12px; }
+
+/* Days of Week Selector */
+.vie-dow-select { display: flex; gap: 8px; margin-bottom: 12px; }
+.vie-dow-select label { cursor: pointer; }
+.vie-dow-select input { display: none; }
+.vie-dow-select .day { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 2px solid #c3c4c7; border-radius: 4px; font-weight: 600; font-size: 13px; transition: .15s; }
+.vie-dow-select input:checked + .day { background: #2271b1; border-color: #2271b1; color: #fff; }
+.vie-dow-select label:hover .day { border-color: #2271b1; }
+
+/* Presets */
+.vie-presets { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.vie-presets .label { color: #646970; font-size: 12px; }
+
+/* Info Box */
+.vie-info-grid { display: flex; gap: 24px; padding: 12px; background: #f6f7f7; border: 1px solid #c3c4c7; margin-top: 12px; }
+.vie-info-grid .item .label { display: block; font-size: 11px; color: #646970; }
+.vie-info-grid .item .value { font-size: 15px; font-weight: 600; }
+
+/* Preview */
+.vie-preview { padding: 12px; background: #f0f6fc; border: 1px solid #c3c4c7; margin-bottom: 15px; }
+.vie-preview ul { margin: 0; padding-left: 18px; }
+.vie-preview li { margin-bottom: 4px; }
+.vie-preview strong { color: #2271b1; }
+.vie-preview .placeholder { color: #646970; text-align: center; margin: 0; }
+
+/* Status Message */
+.vie-msg { font-size: 13px; margin-left: 10px; }
+.vie-msg.success { color: #00a32a; }
+.vie-msg.error { color: #d63638; }
+.vie-msg.loading { color: #2271b1; }
+
+/* Log */
+.vie-log { margin-top: 15px; }
+.vie-log pre { max-height: 180px; overflow: auto; padding: 10px; background: #1d2327; color: #50c878; font-size: 12px; margin: 0; }
+
+/* ===== Daily Rules Table ===== */
+.vie-daily-rules-table { margin: 15px 0; }
+.vie-daily-rules-table th { text-align: left; padding: 10px 8px; font-size: 12px; font-weight: 600; background: #f6f7f7; }
+.vie-daily-rules-table td { padding: 8px; vertical-align: middle; }
+.vie-daily-rules-table .col-apply { width: 60px; text-align: center; }
+.vie-daily-rules-table .col-day { width: 120px; }
+.vie-daily-rules-table .col-price { width: 150px; }
+.vie-daily-rules-table .col-stock { width: 80px; }
+.vie-daily-rules-table .col-status { width: 130px; }
+
+.vie-daily-rules-table .day-price-room,
+.vie-daily-rules-table .day-price-combo { width: 100%; max-width: 140px; }
+.vie-daily-rules-table .day-stock { width: 70px; }
+.vie-daily-rules-table .day-status { width: 100%; max-width: 120px; }
+
+.vie-daily-rules-table .vie-day-row.weekend { background: #fff8e5; }
+.vie-daily-rules-table .vie-day-row:hover { background: #f0f6fc; }
+.vie-daily-rules-table .vie-day-row.weekend:hover { background: #fef3d4; }
+
+/* Day Badge */
+.vie-badge { display: inline-block; padding: 2px 6px; font-size: 10px; border-radius: 3px; margin-left: 6px; font-weight: 500; }
+.vie-badge.weekend { background: #ffc107; color: #1d2327; }
+
+/* Custom Checkbox */
+.vie-checkbox-wrap { display: inline-flex; align-items: center; cursor: pointer; }
+.vie-checkbox-wrap input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+
+/* Daily Presets & Copy Values */
+.vie-daily-presets, .vie-copy-values { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.vie-daily-presets .label, .vie-copy-values .label { color: #646970; font-size: 12px; font-weight: 500; }
+
+/* Preview Table */
+.vie-preview-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+.vie-preview-table th { background: #f0f0f1; padding: 6px 8px; text-align: left; font-weight: 600; border: 1px solid #c3c4c7; }
+.vie-preview-table td { padding: 6px 8px; border: 1px solid #c3c4c7; }
+.vie-preview-table tr:nth-child(even) { background: #f9f9f9; }
+
+/* ===== Empty State ===== */
+.vie-empty { text-align: center; padding: 50px 20px; }
+.vie-empty .dashicons { font-size: 48px; width: 48px; height: 48px; color: #c3c4c7; }
+.vie-empty h3 { margin: 15px 0 8px; }
+.vie-empty p { color: #646970; margin-bottom: 15px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+    #poststuff .vie-columns { flex-direction: column; }
+    #poststuff .vie-col-side { width: 100%; }
+}
+@media (max-width: 782px) {
+    .vie-cal-toolbar { flex-direction: column; align-items: flex-start; }
+    .vie-cal-toolbar .selectors { flex-direction: column; width: 100%; }
+    .vie-cal-toolbar .selectors select { width: 100%; }
+    .vie-repeater-body { grid-template-columns: 1fr; }
+    .vie-dow-select { flex-wrap: wrap; }
+    .vie-dow-select .day { width: 38px; height: 38px; }
+    
+    /* Daily Rules Table - Mobile */
+    .vie-daily-rules-table { font-size: 12px; }
+    .vie-daily-rules-table th { padding: 6px 4px; font-size: 11px; }
+    .vie-daily-rules-table td { padding: 6px 4px; }
+    .vie-daily-rules-table .col-day { width: auto; }
+    .vie-daily-rules-table .col-price { width: auto; }
+    .vie-daily-rules-table .day-price-room,
+    .vie-daily-rules-table .day-price-combo { max-width: 100px; }
+    .vie-daily-rules-table .day-stock { width: 50px; }
+    .vie-daily-rules-table .day-status { max-width: 90px; font-size: 11px; }
+    .vie-badge { font-size: 9px; padding: 1px 4px; }
+}
