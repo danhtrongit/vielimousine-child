@@ -1040,26 +1040,25 @@
         },
         
         /**
-         * Update datepicker with minimalist pricing display
-         * Uses colored dots + single best price + hover tooltips
+         * Update datepicker with ALWAYS VISIBLE prices
+         * Two-part layout: day-number + day-price-label
          */
         updateDatepickerPrices: function() {
             var self = this;
-            var isMobile = window.innerWidth <= 767;
             
             // Add pricing class to datepicker
             $('.ui-datepicker').addClass('vie-pricing-dp');
             
-            // Inject legend if not exists
-            this.injectLegend();
-            
             $('.ui-datepicker-calendar td').each(function() {
                 var $cell = $(this);
-                var $link = $cell.find('a, span').first();
+                var $link = $cell.find('a, span.ui-state-default').first();
                 
                 if ($link.length === 0 || $cell.hasClass('ui-datepicker-other-month')) return;
                 
-                // Get date from cell
+                // Skip if already processed
+                if ($link.find('.day-number').length > 0) return;
+                
+                // Get original day text
                 var dayText = $link.text().trim();
                 var day = parseInt(dayText);
                 if (isNaN(day)) return;
@@ -1072,168 +1071,38 @@
                 var date = new Date(parseInt(yearText), self.getMonthIndex(monthText), day);
                 var pricing = self.getPricingForDate(date);
                 
-                // Clean previous elements
-                $cell.find('.vie-dp-price-tag, .vie-dp-status-dot, .vie-dp-tooltip').remove();
-                $cell.removeClass('vie-dp-unavailable vie-dp-weekend');
-                
-                // Check weekend
+                // Check weekend (Fri, Sat, Sun)
                 var dayOfWeek = date.getDay();
-                if (dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6) {
+                var isWeekend = (dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6);
+                
+                // Clean cell classes
+                $cell.removeClass('vie-dp-soldout vie-dp-weekend');
+                
+                if (isWeekend) {
                     $cell.addClass('vie-dp-weekend');
                 }
                 
-                if (!pricing) return;
+                // Build new cell content
+                var priceLabel = '';
+                var weekendClass = isWeekend ? ' weekend' : '';
                 
-                // Handle unavailable
-                if (!pricing.available) {
-                    $cell.addClass('vie-dp-unavailable');
-                    return;
-                }
-                
-                // Determine price level (for dot color)
-                var dotClass = self.getPriceDotClass(pricing);
-                
-                // Add status dot
-                $cell.append('<span class="vie-dp-status-dot ' + dotClass + '"></span>');
-                
-                // Add price tag (best price - Combo if available, else Room)
-                if (!isMobile) {
-                    var bestPrice = pricing.price_combo_formatted || pricing.price_room_formatted;
-                    $link.append('<span class="vie-dp-price-tag">' + bestPrice + '</span>');
-                }
-                
-                // Add hover tooltip
-                var tooltipHtml = self.buildPriceTooltip(date, pricing);
-                $cell.append(tooltipHtml);
-            });
-        },
-        
-        /**
-         * Get dot color class based on price/stock level
-         */
-        getPriceDotClass: function(pricing) {
-            // Determine based on stock level
-            if (pricing.stock <= 2) {
-                return 'vie-dp-dot-high'; // Red - almost sold out
-            } else if (pricing.stock <= 5) {
-                return 'vie-dp-dot-mid'; // Orange - limited
-            }
-            return 'vie-dp-dot-good'; // Green - available
-        },
-        
-        /**
-         * Build hover tooltip HTML
-         */
-        buildPriceTooltip: function(date, pricing) {
-            var dateStr = date.toLocaleDateString('vi-VN', { 
-                weekday: 'long', 
-                day: 'numeric', 
-                month: 'long' 
-            });
-            
-            var html = '<div class="vie-dp-tooltip">';
-            html += '<div class="vie-tooltip-date">' + dateStr + '</div>';
-            html += '<div class="vie-tooltip-prices">';
-            
-            // Combo price (highlighted if available)
-            if (pricing.price_combo) {
-                html += '<div class="vie-tooltip-row">';
-                html += '<span class="vie-tooltip-label">Combo:</span>';
-                html += '<span class="vie-tooltip-value combo">' + this.formatCurrency(pricing.price_combo) + '</span>';
-                html += '</div>';
-            }
-            
-            // Room only price
-            html += '<div class="vie-tooltip-row">';
-            html += '<span class="vie-tooltip-label">Room Only:</span>';
-            html += '<span class="vie-tooltip-value">' + this.formatCurrency(pricing.price_room) + '</span>';
-            html += '</div>';
-            
-            html += '</div>';
-            
-            // Stock info
-            var stockClass = pricing.stock <= 3 ? 'low' : '';
-            html += '<div class="vie-tooltip-stock ' + stockClass + '">';
-            html += 'Còn ' + pricing.stock + ' phòng';
-            html += '</div>';
-            
-            html += '</div>';
-            return html;
-        },
-        
-        /**
-         * Inject legend below datepicker
-         */
-        injectLegend: function() {
-            var $dp = $('.ui-datepicker.vie-pricing-dp');
-            if ($dp.find('.vie-dp-legend').length > 0) return;
-            
-            var legendHtml = '<div class="vie-dp-legend">';
-            legendHtml += '<span class="vie-legend-item"><span class="vie-legend-dot good"></span>Giá tốt</span>';
-            legendHtml += '<span class="vie-legend-item"><span class="vie-legend-dot mid"></span>Sắp hết</span>';
-            legendHtml += '<span class="vie-legend-item"><span class="vie-legend-dot high"></span>Còn ít</span>';
-            legendHtml += '<span class="vie-legend-item"><span class="vie-legend-dot off"></span>Hết</span>';
-            legendHtml += '</div>';
-            
-            $dp.append(legendHtml);
-            
-            // Setup mobile touch handlers
-            this.setupMobileTooltips();
-        },
-        
-        /**
-         * Setup mobile long-press tooltip behavior
-         */
-        setupMobileTooltips: function() {
-            if (window.innerWidth > 767) return;
-            
-            var self = this;
-            var touchTimer = null;
-            var $activeTooltip = null;
-            
-            $(document).off('touchstart.viedp touchend.viedp touchmove.viedp');
-            
-            // Long press to show tooltip
-            $(document).on('touchstart.viedp', '.vie-pricing-dp td', function(e) {
-                var $cell = $(this);
-                var $tooltip = $cell.find('.vie-dp-tooltip');
-                
-                if ($tooltip.length === 0) return;
-                
-                touchTimer = setTimeout(function() {
-                    // Hide any other tooltip
-                    if ($activeTooltip) {
-                        $activeTooltip.removeClass('vie-tooltip-visible');
+                if (pricing) {
+                    if (!pricing.available) {
+                        $cell.addClass('vie-dp-soldout');
+                        priceLabel = pricing.price_combo_formatted || pricing.price_room_formatted;
+                    } else {
+                        // Show best price (Combo if available, else Room)
+                        priceLabel = pricing.price_combo_formatted || pricing.price_room_formatted;
                     }
-                    
-                    // Show this tooltip
-                    $tooltip.addClass('vie-tooltip-visible').css({
-                        opacity: 1,
-                        visibility: 'visible'
-                    });
-                    $activeTooltip = $tooltip;
-                    
-                    // Add overlay to close on tap elsewhere
-                    if ($('.vie-tooltip-overlay').length === 0) {
-                        $('body').append('<div class="vie-tooltip-overlay"></div>');
-                    }
-                }, 500); // 500ms long press
-            });
-            
-            $(document).on('touchend.viedp touchmove.viedp', '.vie-pricing-dp td', function() {
-                clearTimeout(touchTimer);
-            });
-            
-            // Close tooltip on overlay tap
-            $(document).on('touchstart.viedp click', '.vie-tooltip-overlay', function() {
-                if ($activeTooltip) {
-                    $activeTooltip.removeClass('vie-tooltip-visible').css({
-                        opacity: 0,
-                        visibility: 'hidden'
-                    });
-                    $activeTooltip = null;
                 }
-                $(this).remove();
+                
+                // Replace link content with structured HTML
+                var html = '<span class="day-number">' + day + '</span>';
+                if (priceLabel) {
+                    html += '<span class="day-price-label' + weekendClass + '">' + priceLabel + '</span>';
+                }
+                
+                $link.html(html);
             });
         },
         

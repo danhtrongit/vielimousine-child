@@ -1233,11 +1233,11 @@ body.vie-modal-open {
     .vie-summary-row.vie-summary-total .vie-summary-value { font-size: 20px; }
 }
 
-/* ===== MINIMALIST PRICING DATEPICKER ===== */
+/* ===== PRICING DATEPICKER - ALWAYS VISIBLE PRICES ===== */
 
 /* Base datepicker container */
 .ui-datepicker.vie-pricing-dp {
-    width: 320px;
+    width: 340px;
     font-family: inherit;
     background: #fff;
     border: none;
@@ -1249,7 +1249,7 @@ body.vie-modal-open {
 
 /* Header */
 .vie-pricing-dp .ui-datepicker-header {
-    padding: 16px;
+    padding: 14px 16px;
     background: linear-gradient(135deg, var(--vie-primary) 0%, #1e40af 100%);
     border: none;
     border-radius: 12px 12px 0 0;
@@ -1306,9 +1306,9 @@ body.vie-modal-open {
 /* Calendar table */
 .vie-pricing-dp .ui-datepicker-calendar {
     margin: 0;
-    padding: 12px;
+    padding: 8px;
     border-collapse: separate;
-    border-spacing: 4px;
+    border-spacing: 3px;
     width: 100%;
 }
 
@@ -1320,50 +1320,88 @@ body.vie-modal-open {
     text-transform: uppercase;
 }
 
-/* Day cell - Minimalist design */
+/* ===== DAY CELL - TWO PART VERTICAL LAYOUT ===== */
 .vie-pricing-dp .ui-datepicker-calendar td {
-    position: relative;
-    width: 38px;
-    height: 48px;
     padding: 0;
     text-align: center;
     vertical-align: top;
 }
 
 .vie-pricing-dp .ui-datepicker-calendar td a,
-.vie-pricing-dp .ui-datepicker-calendar td span {
-    display: flex;
+.vie-pricing-dp .ui-datepicker-calendar td span.ui-state-default {
+    display: flex !important;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    height: 100%;
+    justify-content: center;
+    width: 42px;
+    height: 56px;
     padding: 4px 2px;
     border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--vie-text);
     background: #f8fafc;
-    border: 1px solid transparent;
+    border: 1px solid #e2e8f0;
     transition: all 0.15s ease;
     text-decoration: none;
+    line-height: 1.2;
 }
 
+/* Day number - Top part */
+.vie-pricing-dp .day-number {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--vie-text);
+    margin-bottom: 2px;
+}
+
+/* Price label - Bottom part (ALWAYS VISIBLE) */
+.vie-pricing-dp .day-price-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #dc2626;
+    background: #fef2f2;
+    padding: 2px 4px;
+    border-radius: 4px;
+    min-width: 32px;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Weekend price - Higher */
+.vie-pricing-dp .day-price-label.weekend {
+    color: #ea580c;
+    background: #fff7ed;
+}
+
+/* Hover state */
 .vie-pricing-dp .ui-datepicker-calendar td a:hover {
     background: var(--vie-primary);
-    color: #fff;
+    border-color: var(--vie-primary);
     transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-.vie-pricing-dp .ui-datepicker-calendar td a:hover .vie-dp-price-tag {
-    color: rgba(255,255,255,0.9);
+.vie-pricing-dp .ui-datepicker-calendar td a:hover .day-number {
+    color: #fff;
+}
+
+.vie-pricing-dp .ui-datepicker-calendar td a:hover .day-price-label {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
 }
 
 /* Selected/Active state */
 .vie-pricing-dp .ui-datepicker-calendar td .ui-state-active {
     background: var(--vie-primary);
-    color: #fff;
+    border-color: var(--vie-primary);
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.vie-pricing-dp .ui-datepicker-calendar td .ui-state-active .day-number {
+    color: #fff;
+}
+
+.vie-pricing-dp .ui-datepicker-calendar td .ui-state-active .day-price-label {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
 }
 
 /* Today highlight */
@@ -1372,56 +1410,27 @@ body.vie-modal-open {
     background: #eff6ff;
 }
 
-/* ===== PRICE INDICATOR SYSTEM ===== */
-
-/* Price tag - Only show best price (Combo) */
-.vie-dp-price-tag {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--vie-primary);
-    margin-top: 2px;
-    line-height: 1;
-}
-
-/* Color-coded status dot */
-.vie-dp-status-dot {
-    position: absolute;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-}
-
-/* Green dot: Good price / Many rooms */
-.vie-dp-dot-good {
-    background: #22c55e;
-    box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
-}
-
-/* Orange dot: Mid price / Limited */
-.vie-dp-dot-mid {
-    background: #f59e0b;
-    box-shadow: 0 0 4px rgba(245, 158, 11, 0.5);
-}
-
-/* Red dot: High price / Almost sold out */
-.vie-dp-dot-high {
-    background: #ef4444;
-    box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
-}
-
-/* Gray: Sold out */
-.vie-dp-unavailable a,
-.vie-dp-unavailable span {
+/* ===== SOLD OUT / UNAVAILABLE ===== */
+.vie-pricing-dp td.vie-dp-soldout a,
+.vie-pricing-dp td.vie-dp-soldout span {
     background: #f1f5f9 !important;
-    color: #94a3b8 !important;
+    border-color: #e2e8f0 !important;
     cursor: not-allowed !important;
     opacity: 0.6;
 }
 
-.vie-dp-unavailable::after {
+.vie-pricing-dp td.vie-dp-soldout .day-number {
+    color: #94a3b8;
+}
+
+.vie-pricing-dp td.vie-dp-soldout .day-price-label {
+    text-decoration: line-through;
+    color: #cbd5e1;
+    background: transparent;
+}
+
+/* Diagonal stripes for sold out */
+.vie-pricing-dp td.vie-dp-soldout::after {
     content: '';
     position: absolute;
     top: 0;
@@ -1432,209 +1441,48 @@ body.vie-modal-open {
         -45deg,
         transparent,
         transparent 4px,
-        rgba(148, 163, 184, 0.15) 4px,
-        rgba(148, 163, 184, 0.15) 8px
+        rgba(148, 163, 184, 0.1) 4px,
+        rgba(148, 163, 184, 0.1) 8px
     );
     pointer-events: none;
     border-radius: 8px;
 }
 
-/* Weekend highlight */
-.vie-dp-weekend a {
-    background: #fef2f2;
+/* Weekend background */
+.vie-pricing-dp td.vie-dp-weekend a {
+    background: #fffbeb;
+    border-color: #fcd34d;
 }
-
-/* ===== HOVER TOOLTIP ===== */
-.vie-dp-tooltip {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 180px;
-    padding: 12px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
-    pointer-events: none;
-}
-
-.vie-dp-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: #fff;
-}
-
-.vie-pricing-dp td:hover .vie-dp-tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(-4px);
-}
-
-/* Tooltip content */
-.vie-tooltip-date {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--vie-text);
-    margin-bottom: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.vie-tooltip-prices {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.vie-tooltip-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12px;
-}
-
-.vie-tooltip-label {
-    color: var(--vie-text-muted);
-}
-
-.vie-tooltip-value {
-    font-weight: 600;
-    color: var(--vie-text);
-}
-
-.vie-tooltip-value.combo {
-    color: #ea580c;
-    font-size: 14px;
-}
-
-.vie-tooltip-stock {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid #e5e7eb;
-    font-size: 11px;
-    color: var(--vie-text-muted);
-}
-
-.vie-tooltip-stock.low {
-    color: #ef4444;
-}
-
-/* ===== LEGEND ===== */
-.vie-dp-legend {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    padding: 12px;
-    background: #f8fafc;
-    border-radius: 0 0 12px 12px;
-    border-top: 1px solid #e5e7eb;
-}
-
-.vie-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--vie-text-muted);
-}
-
-.vie-legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-
-.vie-legend-dot.good { background: #22c55e; }
-.vie-legend-dot.mid { background: #f59e0b; }
-.vie-legend-dot.high { background: #ef4444; }
-.vie-legend-dot.off { background: #94a3b8; }
 
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 767px) {
     .ui-datepicker.vie-pricing-dp {
         width: 100%;
         max-width: 320px;
-        border-radius: 16px;
+        border-radius: 12px;
     }
     
     .vie-pricing-dp .ui-datepicker-calendar {
-        padding: 8px;
+        padding: 6px;
         border-spacing: 2px;
     }
     
-    .vie-pricing-dp .ui-datepicker-calendar td {
-        width: 38px;
-        height: 42px;
-    }
-    
     .vie-pricing-dp .ui-datepicker-calendar td a,
-    .vie-pricing-dp .ui-datepicker-calendar td span {
-        font-size: 12px;
+    .vie-pricing-dp .ui-datepicker-calendar td span.ui-state-default {
+        width: 38px;
+        height: 48px;
         padding: 3px 1px;
         border-radius: 6px;
     }
     
-    /* Mobile: Hide price text, show only dots */
-    .vie-dp-price-tag {
-        display: none;
+    .vie-pricing-dp .day-number {
+        font-size: 12px;
     }
     
-    .vie-dp-status-dot {
-        bottom: 3px;
-        width: 5px;
-        height: 5px;
+    /* Mobile: Smaller price but STILL VISIBLE */
+    .vie-pricing-dp .day-price-label {
+        font-size: 8px;
+        padding: 1px 3px;
+        min-width: 28px;
     }
-    
-    /* Tooltip: Show on touch/long-press via JS */
-    .vie-dp-tooltip {
-        position: fixed;
-        bottom: auto;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        min-width: 220px;
-    }
-    
-    .vie-dp-tooltip::after {
-        display: none;
-    }
-    
-    /* Legend: More compact */
-    .vie-dp-legend {
-        gap: 10px;
-        padding: 10px;
-    }
-    
-    .vie-legend-item {
-        font-size: 10px;
-        gap: 4px;
-    }
-    
-    .vie-legend-dot {
-        width: 6px;
-        height: 6px;
-    }
-    
-    /* Mobile tooltip visible state */
-    .vie-dp-tooltip.vie-tooltip-visible {
-        opacity: 1 !important;
-        visibility: visible !important;
-        z-index: 100000;
-    }
-}
-
-/* Mobile tooltip overlay */
-.vie-tooltip-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 99999;
 }
