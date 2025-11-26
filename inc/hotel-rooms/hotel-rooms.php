@@ -78,21 +78,35 @@ class Vie_Hotel_Rooms
         require_once VIE_HOTEL_ROOMS_PATH . '/includes/class-database.php';
         require_once VIE_HOTEL_ROOMS_PATH . '/includes/class-helpers.php';
 
+        // SePay Payment Integration
+        require_once VIE_HOTEL_ROOMS_PATH . '/includes/class-sepay-helper.php';
+        require_once VIE_HOTEL_ROOMS_PATH . '/includes/class-sepay-webhook.php';
+
         // Admin classes
         require_once VIE_HOTEL_ROOMS_PATH . '/admin/class-admin.php';
         require_once VIE_HOTEL_ROOMS_PATH . '/admin/class-ajax-handlers.php';
         require_once VIE_HOTEL_ROOMS_PATH . '/admin/class-bookings.php';
         require_once VIE_HOTEL_ROOMS_PATH . '/admin/class-transport-metabox.php';
+        require_once VIE_HOTEL_ROOMS_PATH . '/admin/class-sepay-admin.php';
 
         // Frontend classes
         require_once VIE_HOTEL_ROOMS_PATH . '/frontend/class-shortcode.php';
         require_once VIE_HOTEL_ROOMS_PATH . '/frontend/class-ajax.php';
+        require_once VIE_HOTEL_ROOMS_PATH . '/frontend/class-sepay-frontend.php';
 
         // Initialize classes
         new Vie_Hotel_Rooms_Admin_Bookings();
         new Vie_Hotel_Rooms_Shortcode();
         new Vie_Hotel_Rooms_Frontend_Ajax();
         new Vie_Hotel_Transport_Metabox();
+
+        // Initialize SePay Payment
+        vie_sepay_webhook();
+        vie_sepay_frontend();
+        
+        if (is_admin()) {
+            vie_sepay_admin();
+        }
     }
 
     /**

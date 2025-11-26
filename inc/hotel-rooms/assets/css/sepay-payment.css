@@ -1,0 +1,517 @@
+/**
+ * SePay Payment UI Styles for Hotel Booking
+ * 
+ * @package VieHotelRooms
+ * @version 1.0.0
+ */
+
+:root {
+    --sepay-primary: #006DD6;
+    --sepay-success: #73AF55;
+    --sepay-warning: #f59e0b;
+    --sepay-border: #e2e8f0;
+    --sepay-bg: #f8fafc;
+    --sepay-text: #334155;
+    --sepay-text-light: #64748b;
+}
+
+/* Main Container */
+.vie-sepay-payment {
+    max-width: 48rem;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 2px solid var(--sepay-primary);
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.vie-sepay-payment * {
+    box-sizing: border-box;
+}
+
+/* Header */
+.sepay-header {
+    background: linear-gradient(135deg, var(--sepay-primary) 0%, #0052a3 100%);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    text-align: center;
+}
+
+.sepay-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.sepay-header .powered-by {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+/* Body */
+.sepay-body {
+    padding: 1.5rem;
+}
+
+/* Message Area */
+.sepay-message {
+    margin-bottom: 1rem;
+}
+
+/* Payment Info Grid */
+.sepay-pay-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .sepay-pay-info {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+/* QR Section */
+.sepay-qr-section {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+.sepay-qr-title {
+    font-size: 0.875rem;
+    color: var(--sepay-text);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.sepay-qr-wrapper {
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem;
+}
+
+.sepay-qr-wrapper::before,
+.sepay-qr-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    border: 2px solid var(--sepay-success);
+}
+
+.sepay-qr-wrapper::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+}
+
+.sepay-qr-wrapper::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+}
+
+.sepay-qr-image {
+    display: block;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.sepay-download-qr {
+    margin-top: 1rem;
+}
+
+.sepay-download-qr a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--sepay-primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.sepay-download-qr a:hover {
+    background: #0052a3;
+    color: #fff;
+}
+
+.sepay-download-qr svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Manual Section */
+.sepay-manual-section {
+    flex: 1;
+}
+
+.sepay-manual-title {
+    font-size: 0.875rem;
+    color: var(--sepay-text);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+/* Bank Info Card */
+.sepay-bank-card {
+    border: 1px solid var(--sepay-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sepay-bank-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--sepay-bg);
+    border-bottom: 1px solid var(--sepay-border);
+}
+
+.sepay-bank-logo {
+    max-height: 48px;
+    max-width: 120px;
+    object-fit: contain;
+}
+
+.sepay-bank-rows {
+    padding: 0.5rem 0;
+}
+
+.sepay-bank-row {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--sepay-border);
+}
+
+.sepay-bank-row:last-child {
+    border-bottom: none;
+}
+
+@media (min-width: 480px) {
+    .sepay-bank-row {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.sepay-bank-label {
+    color: var(--sepay-text-light);
+    font-size: 0.875rem;
+    flex: 0 0 100px;
+    margin-bottom: 0.25rem;
+}
+
+@media (min-width: 480px) {
+    .sepay-bank-label {
+        margin-bottom: 0;
+    }
+}
+
+.sepay-bank-value {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.sepay-bank-value strong {
+    color: var(--sepay-text);
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.sepay-bank-value .amount {
+    color: var(--sepay-primary);
+    font-size: 1.125rem;
+}
+
+/* Copy Button */
+.sepay-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    background: rgba(0, 109, 214, 0.1);
+    color: var(--sepay-primary);
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.sepay-copy-btn:hover {
+    background: rgba(0, 109, 214, 0.2);
+}
+
+.sepay-copy-btn.copied {
+    background: rgba(115, 175, 85, 0.15);
+    color: var(--sepay-success);
+}
+
+.sepay-copy-btn .copy-icon {
+    display: flex;
+    align-items: center;
+}
+
+.sepay-copy-btn .copy-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Warning Note */
+.sepay-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #92400e;
+}
+
+.sepay-warning svg {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    color: #f59e0b;
+}
+
+.sepay-warning strong {
+    color: #92400e;
+}
+
+/* Footer - Waiting Status */
+.sepay-pay-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--sepay-bg);
+    border-top: 1px solid var(--sepay-border);
+    color: var(--sepay-text-light);
+    animation: sepay-pulse 2s ease-in-out infinite;
+}
+
+.sepay-pay-footer .loading-spinner {
+    width: 24px;
+    height: 24px;
+}
+
+.sepay-pay-footer .loading-spinner .spinner {
+    width: 100%;
+    height: 100%;
+    animation: sepay-rotate 2s linear infinite;
+}
+
+.sepay-pay-footer .loading-spinner .path {
+    stroke: var(--sepay-primary);
+    stroke-linecap: round;
+    animation: sepay-dash 1.5s ease-in-out infinite;
+}
+
+@keyframes sepay-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes sepay-dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+@keyframes sepay-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Success Notification */
+.sepay-paid-notification {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.sepay-paid-notification .paid-icon svg {
+    width: 80px;
+    height: 80px;
+}
+
+.sepay-paid-notification .paid-message {
+    color: var(--sepay-success);
+}
+
+.sepay-paid-notification .paid-message h2 {
+    margin: 0;
+    color: var(--sepay-success);
+}
+
+.sepay-paid-notification .paid-booking-code {
+    padding: 0.75rem 1.5rem;
+    background: var(--sepay-bg);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.sepay-paid-notification .paid-booking-code strong {
+    color: var(--sepay-primary);
+    font-size: 1.25rem;
+}
+
+/* Animation for success icon */
+.sepay-paid-notification .path.circle {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+    animation: sepay-dash 0.9s ease-in-out;
+}
+
+.sepay-paid-notification .path.check {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: -100;
+    animation: sepay-dash-check 0.9s 0.35s ease-in-out forwards;
+}
+
+@keyframes sepay-dash {
+    0% { stroke-dashoffset: 1000; }
+    100% { stroke-dashoffset: 0; }
+}
+
+@keyframes sepay-dash-check {
+    0% { stroke-dashoffset: -100; }
+    100% { stroke-dashoffset: 900; }
+}
+
+/* Timeout Notification */
+.sepay-timeout-notification {
+    text-align: center;
+    padding: 1rem;
+}
+
+.sepay-timeout-notification p {
+    margin-bottom: 1rem;
+}
+
+.sepay-timeout-notification .btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--sepay-primary);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.sepay-timeout-notification .btn:hover {
+    background: #0052a3;
+}
+
+/* Booking Summary in Payment Page */
+.sepay-booking-summary {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--sepay-bg);
+    border-radius: 8px;
+    border: 1px solid var(--sepay-border);
+}
+
+.sepay-booking-summary h4 {
+    margin: 0 0 0.75rem;
+    color: var(--sepay-text);
+    font-size: 1rem;
+}
+
+.sepay-booking-summary .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    font-size: 0.875rem;
+}
+
+.sepay-booking-summary .summary-row span:first-child {
+    color: var(--sepay-text-light);
+}
+
+.sepay-booking-summary .summary-total {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--sepay-border);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.sepay-booking-summary .summary-total span:last-child {
+    color: var(--sepay-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .vie-sepay-payment {
+        margin: 1rem;
+        border-radius: 8px;
+    }
+
+    .sepay-body {
+        padding: 1rem;
+    }
+
+    .sepay-qr-image {
+        width: 180px;
+        height: 180px;
+    }
+
+    .sepay-copy-btn {
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .vie-sepay-payment {
+        border: 1px solid #000;
+        box-shadow: none;
+    }
+
+    .sepay-copy-btn,
+    .sepay-download-qr,
+    .sepay-pay-footer {
+        display: none !important;
+    }
+}
