@@ -706,15 +706,43 @@ get_header();
         var paymentCheckInterval = null;
         var isPaid = false;
 
-        // Copy text function
+        // Copy text function (with fallback for HTTP)
         window.copyText = function(text, btn) {
-            navigator.clipboard.writeText(text).then(function() {
-                $(btn).addClass('copied').text('✓');
-                setTimeout(function() {
-                    $(btn).removeClass('copied').text('📋');
-                }, 2000);
-            });
+            var success = false;
+            
+            // Try modern clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showCopySuccess(btn);
+                }).catch(function() {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
         };
+
+        // Fallback copy method for HTTP sites
+        function fallbackCopy(text, btn) {
+            var $temp = $('<textarea>');
+            $('body').append($temp);
+            $temp.val(text).select();
+            try {
+                document.execCommand('copy');
+                showCopySuccess(btn);
+            } catch (e) {
+                alert('Không thể sao chép. Vui lòng copy thủ công: ' + text);
+            }
+            $temp.remove();
+        }
+
+        // Show copy success feedback
+        function showCopySuccess(btn) {
+            $(btn).addClass('copied').text('✓');
+            setTimeout(function() {
+                $(btn).removeClass('copied').text('📋');
+            }, 2000);
+        }
 
         // Form submit - Show SePay payment
         $('#vie-checkout-form').on('submit', function (e) {
