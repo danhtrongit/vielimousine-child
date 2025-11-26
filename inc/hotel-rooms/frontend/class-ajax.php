@@ -35,6 +35,10 @@ class Vie_Hotel_Rooms_Frontend_Ajax
         // Fix 400 Error: Add checkout process handler
         add_action('wp_ajax_vie_process_checkout', array($this, 'process_checkout'));
         add_action('wp_ajax_nopriv_vie_process_checkout', array($this, 'process_checkout'));
+        
+        // Monthly pricing for datepicker
+        add_action('wp_ajax_vie_get_monthly_pricing', array($this, 'get_monthly_pricing'));
+        add_action('wp_ajax_nopriv_vie_get_monthly_pricing', array($this, 'get_monthly_pricing'));
     }
 
     /**
@@ -876,5 +880,143 @@ class Vie_Hotel_Rooms_Frontend_Ajax
 
             wp_mail($booking_data['customer_email'], $customer_subject, $customer_message);
         }
+    }
+    
+    /**
+     * Get monthly pricing for datepicker display
+     * Returns pricing data for current month + next month
+     */
+    public function get_monthly_pricing()
+    {
+        check_ajax_referer('vie_booking_nonce', 'nonce');
+        
+        $room_id = absint($_POST['room_id'] ?? 0);
+        $year = absint($_POST['year'] ?? date('Y'));
+        $month = absint($_POST['month'] ?? date('n'));
+        
+        if (!$room_id) {
+            wp_send_json_error(array('message' => __('Thiếu thông tin phòng', 'flavor')));
+        }
+        
+        global $wpdb;
+        $table_pricing = $wpdb->prefix . 'hotel_room_pricing';
+        $table_rooms = $wpdb->prefix . 'hotel_rooms';
+        
+        // Get room base price
+        $room = $wpdb->get_row($wpdb->prepare(
+            "SELECT base_price FROM {$table_rooms} WHERE id = %d",
+            $room_id
+        ));
+        
+        if (!$room) {
+            wp_send_json_error(array('message' => __('Phòng không tồn tại', 'flavor')));
+        }
+        
+        $base_price = floatval($room->base_price);
+        
+        // Calculate date range (current month + next month)
+        $start_date = sprintf('%04d-%02d-01', $year, $month);
+        
+        // Get end of next month
+        $next_month = $month + 1;
+        $next_year = $year;
+        if ($next_month > 12) {
+            $next_month = 1;
+            $next_year++;
+        }
+        $end_date = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $next_year, $next_month)));
+        
+        // Fetch pricing data
+        $pricing_data = $wpdb->get_results($wpdb->prepare(
+            "SELECT date, price_room, price_combo, stock, status 
+             FROM {$table_pricing} 
+             WHERE room_id = %d 
+             AND date >= %s 
+             AND date <= %s
+             ORDER BY date ASC",
+            $room_id,
+            $start_date,
+            $end_date
+        ), ARRAY_A);
+        
+        // Build response keyed by date
+        $result = array();
+        $today = date('Y-m-d');
+        
+        // Create date range
+        $current = new DateTime($start_date);
+        $end = new DateTime($end_date);
+        $end->modify('+1 day');
+        
+        // Index pricing data by date
+        $pricing_index = array();
+        foreach ($pricing_data as $row) {
+            $pricing_index[$row['date']] = $row;
+        }
+        
+        // Loop through each day
+        while ($current < $end) {
+            $date_str = $current->format('Y-m-d');
+            
+            // Skip past dates
+            if ($date_str < $today) {
+                $current->modify('+1 day');
+                continue;
+            }
+            
+            if (isset($pricing_index[$date_str])) {
+                $row = $pricing_index[$date_str];
+                $price_room = floatval($row['price_room']) > 0 ? floatval($row['price_room']) : $base_price;
+                $price_combo = floatval($row['price_combo']) > 0 ? floatval($row['price_combo']) : null;
+                $stock = intval($row['stock']);
+                $status = $row['status'];
+            } else {
+                // No custom pricing - use base price
+                $price_room = $base_price;
+                $price_combo = null;
+                $stock = 10; // Default stock
+                $status = 'available';
+            }
+            
+            // Determine availability
+            $is_available = ($stock > 0 && $status !== 'stop_sell');
+            
+            $result[$date_str] = array(
+                'price_room' => $price_room,
+                'price_combo' => $price_combo,
+                'stock' => $stock,
+                'status' => $status,
+                'available' => $is_available,
+                'price_room_formatted' => $this->format_short_price($price_room),
+                'price_combo_formatted' => $price_combo ? $this->format_short_price($price_combo) : null
+            );
+            
+            $current->modify('+1 day');
+        }
+        
+        wp_send_json_success(array(
+            'pricing' => $result,
+            'base_price' => $base_price,
+            'base_price_formatted' => $this->format_short_price($base_price)
+        ));
+    }
+    
+    /**
+     * Format price in short format (e.g., 1.5tr, 800k)
+     */
+    private function format_short_price($amount)
+    {
+        if ($amount >= 1000000) {
+            $formatted = round($amount / 1000000, 1);
+            // Remove .0 if whole number
+            if ($formatted == floor($formatted)) {
+                return intval($formatted) . 'tr';
+            }
+            return $formatted . 'tr';
+        } elseif ($amount >= 1000) {
+            $formatted = round($amount / 1000);
+            return intval($formatted) . 'k';
+        }
+        return number_format($amount, 0, ',', '.');
     }
 }

@@ -1232,3 +1232,258 @@ body.vie-modal-open {
     .vie-weekend-row { margin: 4px -4px; padding: 6px; }
     .vie-summary-row.vie-summary-total .vie-summary-value { font-size: 20px; }
 }
+
+/* ===== PRICING DATEPICKER STYLES ===== */
+
+/* Override jQuery UI Datepicker for larger cells */
+.vie-modal .ui-datepicker,
+.vie-booking-filters .ui-datepicker {
+    width: 320px;
+    font-size: 13px;
+}
+
+.vie-modal .ui-datepicker-calendar,
+.vie-booking-filters .ui-datepicker-calendar {
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+
+.vie-modal .ui-datepicker-calendar th,
+.vie-booking-filters .ui-datepicker-calendar th {
+    padding: 8px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--vie-text-muted);
+}
+
+.vie-modal .ui-datepicker-calendar td,
+.vie-booking-filters .ui-datepicker-calendar td {
+    position: relative;
+    width: 40px;
+    height: 54px;
+    padding: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.vie-modal .ui-datepicker-calendar td a,
+.vie-modal .ui-datepicker-calendar td span,
+.vie-booking-filters .ui-datepicker-calendar td a,
+.vie-booking-filters .ui-datepicker-calendar td span {
+    display: block;
+    padding: 4px 2px 2px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    height: 100%;
+}
+
+/* Day number positioning */
+.vie-modal .ui-datepicker-calendar td a,
+.vie-booking-filters .ui-datepicker-calendar td a {
+    background: #f8fafc;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+}
+
+.vie-modal .ui-datepicker-calendar td a:hover,
+.vie-booking-filters .ui-datepicker-calendar td a:hover {
+    background: var(--vie-primary);
+    color: #fff;
+    border-color: var(--vie-primary);
+}
+
+/* Active/Selected day */
+.vie-modal .ui-datepicker-calendar td .ui-state-active,
+.vie-booking-filters .ui-datepicker-calendar td .ui-state-active {
+    background: var(--vie-primary);
+    color: #fff;
+    border-color: var(--vie-primary);
+}
+
+/* Today */
+.vie-modal .ui-datepicker-calendar td .ui-state-highlight,
+.vie-booking-filters .ui-datepicker-calendar td .ui-state-highlight {
+    border-color: var(--vie-primary);
+    background: #eff6ff;
+}
+
+/* Pricing Day States */
+.vie-dp-available {
+    background: #f0fdf4 !important;
+    border-color: #86efac !important;
+}
+
+.vie-dp-has-combo {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+    border-color: #fbbf24 !important;
+}
+
+.vie-dp-weekend {
+    background: #fef2f2 !important;
+}
+
+.vie-dp-weekend.vie-dp-has-combo {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%) !important;
+    border-color: #f97316 !important;
+}
+
+/* Unavailable/Sold out */
+.vie-dp-unavailable {
+    background: #f1f5f9 !important;
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
+
+.vie-dp-unavailable::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 3px,
+        rgba(239, 68, 68, 0.15) 3px,
+        rgba(239, 68, 68, 0.15) 6px
+    );
+    pointer-events: none;
+}
+
+/* Price label inside cell */
+.vie-dp-price {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    pointer-events: none;
+}
+
+.vie-dp-combo {
+    font-size: 9px;
+    font-weight: 700;
+    color: #ea580c;
+    line-height: 1;
+}
+
+.vie-dp-room {
+    font-size: 8px;
+    color: #9ca3af;
+    text-decoration: line-through;
+    line-height: 1;
+}
+
+.vie-dp-single {
+    font-size: 9px;
+    font-weight: 600;
+    color: #059669;
+    line-height: 1;
+}
+
+/* Unavailable text overlay */
+.vie-dp-unavail-text {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-weight: 700;
+    color: #ef4444;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+/* Past dates */
+.vie-dp-past {
+    opacity: 0.4;
+}
+
+/* Header styling */
+.vie-modal .ui-datepicker-header,
+.vie-booking-filters .ui-datepicker-header {
+    padding: 10px;
+    background: var(--vie-primary);
+    border: none;
+    border-radius: 8px 8px 0 0;
+}
+
+.vie-modal .ui-datepicker-title,
+.vie-booking-filters .ui-datepicker-title {
+    color: #fff;
+    font-weight: 600;
+}
+
+.vie-modal .ui-datepicker-prev,
+.vie-modal .ui-datepicker-next,
+.vie-booking-filters .ui-datepicker-prev,
+.vie-booking-filters .ui-datepicker-next {
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 4px;
+    opacity: 0.8;
+}
+
+.vie-modal .ui-datepicker-prev:hover,
+.vie-modal .ui-datepicker-next:hover,
+.vie-booking-filters .ui-datepicker-prev:hover,
+.vie-booking-filters .ui-datepicker-next:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.2);
+}
+
+.vie-modal .ui-datepicker-prev span,
+.vie-modal .ui-datepicker-next span,
+.vie-booking-filters .ui-datepicker-prev span,
+.vie-booking-filters .ui-datepicker-next span {
+    background-image: none;
+}
+
+.vie-modal .ui-datepicker-prev::after,
+.vie-booking-filters .ui-datepicker-prev::after {
+    content: '‹';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #fff;
+}
+
+.vie-modal .ui-datepicker-next::after,
+.vie-booking-filters .ui-datepicker-next::after {
+    content: '›';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #fff;
+}
+
+/* Mobile datepicker */
+@media (max-width: 767px) {
+    .vie-modal .ui-datepicker,
+    .vie-booking-filters .ui-datepicker {
+        width: 290px;
+        font-size: 12px;
+    }
+    
+    .vie-modal .ui-datepicker-calendar td,
+    .vie-booking-filters .ui-datepicker-calendar td {
+        width: 36px;
+        height: 48px;
+    }
+    
+    .vie-dp-combo { font-size: 8px; }
+    .vie-dp-room { font-size: 7px; }
+    .vie-dp-single { font-size: 8px; }
+    .vie-dp-unavail-text { font-size: 8px; }
+}
