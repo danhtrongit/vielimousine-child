@@ -18,7 +18,7 @@
 | [TASK-05-PHP-CLASSES.md](./TASK-05-PHP-CLASSES.md) | Phase 2: Classes | 2 ngày | ✅ Hoàn thành |
 | [TASK-06-TEMPLATES.md](./TASK-06-TEMPLATES.md) | Phase 2: Templates | 1 ngày | ✅ Hoàn thành |
 | [TASK-07-TESTING.md](./TASK-07-TESTING.md) | Phase 3: Testing | 1.5 ngày | ✅ Hoàn thành |
-| [TASK-08-DEPLOY.md](./TASK-08-DEPLOY.md) | Phase 3: Deploy | 0.5 ngày | 🔄 Đang thực hiện |
+| [TASK-08-DEPLOY.md](./TASK-08-DEPLOY.md) | Phase 3: Deploy | 0.5 ngày | ✅ Hoàn thành |
 
 ---
 
@@ -102,7 +102,7 @@ PHASE 2: LOGIC
 
 PHASE 3: FINALIZE
 [x] TASK-07: Testing PASSED (Automated)
-[ ] TASK-08: Deploy SUCCESS
+[x] TASK-08: Deploy SUCCESS (Git committed)
 ```
 
 ### Daily Standup Template
