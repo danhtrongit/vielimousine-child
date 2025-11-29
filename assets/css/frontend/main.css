@@ -1,0 +1,236 @@
+/**
+ * ============================================================================
+ * FILE: main.css
+ * ============================================================================
+ * 
+ * MÔ TẢ:
+ * Base styles cho frontend: buttons, forms, utilities, loading states
+ * 
+ * MỤC LỤC:
+ * 1. Buttons
+ * 2. Form Elements
+ * 3. Loading States
+ * 4. Utilities
+ * 5. Responsive
+ * 
+ * ----------------------------------------------------------------------------
+ * @package     VielimousineChild
+ * @version     2.0.0
+ * ============================================================================
+ */
+
+/* ==========================================================================
+   1. BUTTONS
+   ========================================================================== */
+
+.vie-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--vie-space-2);
+    padding: var(--vie-space-3) var(--vie-space-6);
+    font-size: var(--vie-text-sm);
+    font-weight: var(--vie-font-semibold);
+    border-radius: var(--vie-radius);
+    border: none;
+    cursor: pointer;
+    transition: all var(--vie-transition);
+    text-decoration: none;
+    line-height: 1;
+}
+
+.vie-btn:focus {
+    outline: none;
+    box-shadow: var(--vie-ring);
+}
+
+.vie-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Primary Button */
+.vie-btn-primary {
+    background: var(--vie-primary);
+    color: var(--vie-white);
+}
+
+.vie-btn-primary:hover:not(:disabled) {
+    background: var(--vie-primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Outline Button */
+.vie-btn-outline {
+    background: transparent;
+    border: 1px solid var(--vie-border-dark);
+    color: var(--vie-text);
+}
+
+.vie-btn-outline:hover:not(:disabled) {
+    border-color: var(--vie-primary);
+    color: var(--vie-primary);
+}
+
+/* Size Variants */
+.vie-btn--sm {
+    padding: var(--vie-space-2) var(--vie-space-4);
+    font-size: var(--vie-text-xs);
+}
+
+.vie-btn--lg {
+    padding: var(--vie-space-4) var(--vie-space-8);
+    font-size: var(--vie-text-base);
+}
+
+.vie-btn--full {
+    width: 100%;
+}
+
+/* ==========================================================================
+   2. FORM ELEMENTS
+   ========================================================================== */
+
+.vie-form-group {
+    margin-bottom: var(--vie-space-4);
+}
+
+.vie-form-group label {
+    display: block;
+    font-size: var(--vie-text-sm);
+    font-weight: var(--vie-font-semibold);
+    margin-bottom: var(--vie-space-2);
+    color: var(--vie-text);
+}
+
+.vie-form-group label .required {
+    color: var(--vie-danger);
+}
+
+.vie-form-group input,
+.vie-form-group select,
+.vie-form-group textarea {
+    width: 100%;
+    padding: var(--vie-space-3) var(--vie-space-4);
+    border: 1px solid var(--vie-border);
+    border-radius: var(--vie-radius);
+    font-size: var(--vie-text-sm);
+    background: var(--vie-white);
+    color: var(--vie-text);
+    transition: border-color var(--vie-transition), box-shadow var(--vie-transition);
+}
+
+.vie-form-group input:focus,
+.vie-form-group select:focus,
+.vie-form-group textarea:focus {
+    outline: none;
+    border-color: var(--vie-primary);
+    box-shadow: var(--vie-ring);
+}
+
+.vie-form-row {
+    display: flex;
+    gap: var(--vie-space-4);
+    margin-bottom: var(--vie-space-4);
+}
+
+.vie-form-half {
+    flex: 1;
+}
+
+.vie-form-third {
+    flex: 1;
+    min-width: 100px;
+}
+
+.vie-help-text {
+    font-size: var(--vie-text-xs);
+    color: var(--vie-text-muted);
+    margin-top: var(--vie-space-1);
+}
+
+/* ==========================================================================
+   3. LOADING STATES
+   ========================================================================== */
+
+.vie-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.vie-loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vie-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--vie-border);
+    border-top-color: var(--vie-primary);
+    border-radius: 50%;
+    animation: vieSpin 0.8s linear infinite;
+}
+
+@keyframes vieSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================================================
+   4. UTILITIES
+   ========================================================================== */
+
+.vie-u-hidden {
+    display: none !important;
+}
+
+.vie-u-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.vie-u-text-center {
+    text-align: center;
+}
+
+.vie-u-text-right {
+    text-align: right;
+}
+
+/* No Results */
+.vie-no-rooms {
+    text-align: center;
+    padding: var(--vie-space-16) var(--vie-space-6);
+    background: var(--vie-bg-light);
+    border-radius: var(--vie-radius-md);
+    color: var(--vie-text-muted);
+}
+
+/* ==========================================================================
+   5. RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    .vie-form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .vie-btn--lg {
+        padding: var(--vie-space-3) var(--vie-space-6);
+    }
+}

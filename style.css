@@ -1,10 +1,30 @@
 /**
- * Theme Name: Vielimousine Child
- * Template: vielimousine
- * Author: Vie
- * Author URI: https://vielimousine.com
- * Requires PHP: 8.2
- * Version: 0.25.3
- * Text Domain: viechild
- * Domain Path: /languages
+ * ============================================================================
+ * Theme Name:   Vielimousine Child
+ * Template:     vielimousine
+ * Author:       Vie Development Team
+ * Author URI:   https://vielimousine.com
+ * Description:  Child theme tùy biến cho hệ thống đặt phòng khách sạn Vie Limousine
+ * Requires PHP: 8.0
+ * Version:      2.0.0
+ * Text Domain:  viechild
+ * Domain Path:  /languages
+ * ============================================================================
+ * 
+ * CHANGELOG:
+ * 
+ * v2.0.0 (29/11/2024)
+ * - Tái cấu trúc toàn bộ theme theo chuẩn MVC
+ * - Tách CSS/JS thành modules
+ * - Áp dụng BEM naming convention
+ * - Thêm comment tiếng Việt đầy đủ
+ * 
+ * v1.x.x (Legacy)
+ * - Xem trong _backup_legacy_v1_* folder
+ * ============================================================================
+ */
+
+/* 
+ * NOTE: File này chỉ chứa metadata của theme.
+ * Tất cả styles nằm trong /assets/css/
  */

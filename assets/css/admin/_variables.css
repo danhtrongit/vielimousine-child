@@ -1,0 +1,58 @@
+/**
+ * Hotel Rooms Admin - CSS Variables
+ * 
+ * Centralizes all color scheme, spacing, and design tokens.
+ * To change the admin color scheme, simply update the :root variables.
+ * 
+ * @package VieHotelRooms
+ * @since 2.0.0
+ */
+
+:root {
+    /* ===== BRAND COLORS - XANH LÁ ĐẬM (DARK GREEN) ===== */
+    --hotel-primary: #1B5E20;           /* Dark Green - Primary brand color */
+    --hotel-primary-hover: #2E7D32;     /* Lighter green on hover */
+    --hotel-secondary: #4CAF50;         /* Secondary accent */
+    
+    /* ===== STATUS COLORS (for Badges) ===== */
+    --status-success: #E8F5E9;          /* Light green background */
+    --text-success: #1B5E20;            /* Dark green text */
+    
+    --status-warning: #FFFDE7;          /* Light yellow background */
+    --text-warning: #F57F17;            /* Orange text */
+    
+    --status-info: #E3F2FD;             /* Light blue background */
+    --text-info: #1565C0;               /* Dark blue text */
+    
+    --status-danger: #FFEBEE;           /* Light red background */
+    --text-danger: #C62828;             /* Dark red text */
+    
+    --status-default: #F5F5F5;          /* Light gray background */
+    --text-default: #616161;            /* Medium gray text */
+    
+    --status-purple: #F3E5F5;           /* Light purple background */
+    --text-purple: #6A1B9A;             /* Dark purple text */
+    
+    /* ===== NEUTRAL COLORS ===== */
+    --wp-text-primary: #1d2327;         /* WordPress primary text */
+    --wp-text-secondary: #646970;       /* WordPress secondary text */
+    --wp-border: #c3c4c7;               /* WordPress border */
+    --wp-bg-light: #f6f7f7;             /* WordPress light background */
+    --wp-bg-hover: #f0f6fc;             /* WordPress hover background */
+    
+    /* ===== SPACING ===== */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+    
+    /* ===== BORDER RADIUS ===== */
+    --modal-radius: 4px;
+    --badge-radius: 3px;
+    --button-radius: 4px;
+    
+    /* ===== SHADOWS ===== */
+    --modal-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

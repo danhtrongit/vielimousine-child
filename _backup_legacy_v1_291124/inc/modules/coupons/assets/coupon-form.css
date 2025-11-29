@@ -1,0 +1,169 @@
+/**
+ * Google Sheets Coupon System - Coupon Form Styles
+ */
+
+.vl-coupon-section {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.vl-coupon-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+#vl-coupon-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.vl-coupon-input-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+#vl-coupon-code {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    text-transform: uppercase;
+    transition: border-color 0.3s;
+}
+
+#vl-coupon-code:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+#vl-coupon-code:read-only {
+    background: #f0f0f0;
+    cursor: not-allowed;
+}
+
+.vl-coupon-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+#vl-coupon-validate {
+    background: #4CAF50;
+    color: white;
+}
+
+#vl-coupon-validate:hover:not(:disabled) {
+    background: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+#vl-coupon-validate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#vl-coupon-remove {
+    background: #f44336;
+    color: white;
+    display: none;
+}
+
+#vl-coupon-remove:hover {
+    background: #da190b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Messages */
+#vl-coupon-message {
+    display: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 14px;
+    width: 100%;
+}
+
+#vl-coupon-message.success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+#vl-coupon-message.error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+#vl-coupon-message.info {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+#vl-coupon-message.warning {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+/* Discount summary */
+.vl-discount-summary {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+#vl-coupon-discount {
+    display: none;
+    color: #4CAF50;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.vl-total-line {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+.vl-total-line.final {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    padding-top: 10px;
+    border-top: 2px solid #333;
+    margin-top: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #vl-coupon-form {
+        flex-direction: column;
+    }
+    
+    .vl-coupon-input-group {
+        min-width: 100%;
+    }
+    
+    .vl-coupon-btn {
+        width: 100%;
+    }
+}

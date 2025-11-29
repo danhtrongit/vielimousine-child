@@ -1,0 +1,191 @@
+/**
+ * ============================================================================
+ * FILE: _variables.css
+ * ============================================================================
+ * 
+ * Single Source of Truth cho tất cả biến CSS trong theme.
+ * IMPORT file này ĐẦU TIÊN trong mọi file CSS khác.
+ * 
+ * MỤC LỤC:
+ * 1. Colors
+ * 2. Typography
+ * 3. Spacing
+ * 4. Borders & Shadows
+ * 5. Transitions
+ * 6. Z-index Scale
+ * 7. Breakpoints (comment only)
+ * 
+ * ----------------------------------------------------------------------------
+ * @package     VielimousineChild
+ * @version     2.0.0
+ * ============================================================================
+ */
+
+:root {
+    /* =====================================================================
+       1. COLORS
+       ===================================================================== */
+    
+    /* Brand Primary - Màu chủ đạo */
+    --vie-primary: #2563eb;
+    --vie-primary-light: #3b82f6;
+    --vie-primary-dark: #1d4ed8;
+    --vie-primary-50: #eff6ff;
+    --vie-primary-100: #dbeafe;
+    
+    /* Brand Secondary */
+    --vie-secondary: #64748b;
+    --vie-secondary-light: #94a3b8;
+    --vie-secondary-dark: #475569;
+    
+    /* Semantic Colors - Màu theo ý nghĩa */
+    --vie-success: #10b981;
+    --vie-success-light: #34d399;
+    --vie-success-bg: #ecfdf5;
+    
+    --vie-danger: #ef4444;
+    --vie-danger-light: #f87171;
+    --vie-danger-bg: #fef2f2;
+    
+    --vie-warning: #f59e0b;
+    --vie-warning-light: #fbbf24;
+    --vie-warning-bg: #fffbeb;
+    
+    --vie-info: #0ea5e9;
+    --vie-info-light: #38bdf8;
+    --vie-info-bg: #f0f9ff;
+    
+    /* Neutral Colors - Thang xám */
+    --vie-white: #ffffff;
+    --vie-black: #000000;
+    --vie-gray-50: #f8fafc;
+    --vie-gray-100: #f1f5f9;
+    --vie-gray-200: #e2e8f0;
+    --vie-gray-300: #cbd5e1;
+    --vie-gray-400: #94a3b8;
+    --vie-gray-500: #64748b;
+    --vie-gray-600: #475569;
+    --vie-gray-700: #334155;
+    --vie-gray-800: #1e293b;
+    --vie-gray-900: #0f172a;
+    
+    /* Semantic Mappings - Ánh xạ theo mục đích sử dụng */
+    --vie-text: var(--vie-gray-800);
+    --vie-text-muted: var(--vie-gray-500);
+    --vie-text-light: var(--vie-gray-400);
+    
+    --vie-bg: var(--vie-white);
+    --vie-bg-light: var(--vie-gray-50);
+    --vie-bg-dark: var(--vie-gray-100);
+    
+    --vie-border: var(--vie-gray-200);
+    --vie-border-light: var(--vie-gray-100);
+    --vie-border-dark: var(--vie-gray-300);
+    
+    /* =====================================================================
+       2. TYPOGRAPHY
+       ===================================================================== */
+    
+    /* Font Family */
+    --vie-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --vie-font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    
+    /* Font Sizes */
+    --vie-text-xs: 0.75rem;      /* 12px */
+    --vie-text-sm: 0.875rem;     /* 14px */
+    --vie-text-base: 1rem;       /* 16px */
+    --vie-text-lg: 1.125rem;     /* 18px */
+    --vie-text-xl: 1.25rem;      /* 20px */
+    --vie-text-2xl: 1.5rem;      /* 24px */
+    --vie-text-3xl: 1.875rem;    /* 30px */
+    --vie-text-4xl: 2.25rem;     /* 36px */
+    
+    /* Font Weights */
+    --vie-font-normal: 400;
+    --vie-font-medium: 500;
+    --vie-font-semibold: 600;
+    --vie-font-bold: 700;
+    
+    /* Line Heights */
+    --vie-leading-none: 1;
+    --vie-leading-tight: 1.25;
+    --vie-leading-snug: 1.375;
+    --vie-leading-normal: 1.5;
+    --vie-leading-relaxed: 1.625;
+    
+    /* =====================================================================
+       3. SPACING
+       ===================================================================== */
+    
+    --vie-space-0: 0;
+    --vie-space-1: 0.25rem;      /* 4px */
+    --vie-space-2: 0.5rem;       /* 8px */
+    --vie-space-3: 0.75rem;      /* 12px */
+    --vie-space-4: 1rem;         /* 16px */
+    --vie-space-5: 1.25rem;      /* 20px */
+    --vie-space-6: 1.5rem;       /* 24px */
+    --vie-space-8: 2rem;         /* 32px */
+    --vie-space-10: 2.5rem;      /* 40px */
+    --vie-space-12: 3rem;        /* 48px */
+    --vie-space-16: 4rem;        /* 64px */
+    --vie-space-20: 5rem;        /* 80px */
+    
+    /* =====================================================================
+       4. BORDERS & SHADOWS
+       ===================================================================== */
+    
+    /* Border Radius */
+    --vie-radius-none: 0;
+    --vie-radius-sm: 4px;
+    --vie-radius: 8px;
+    --vie-radius-md: 12px;
+    --vie-radius-lg: 16px;
+    --vie-radius-xl: 24px;
+    --vie-radius-full: 9999px;
+    
+    /* Box Shadows */
+    --vie-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --vie-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --vie-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --vie-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --vie-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Focus Ring */
+    --vie-ring: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    --vie-ring-danger: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    
+    /* =====================================================================
+       5. TRANSITIONS
+       ===================================================================== */
+    
+    --vie-transition-fast: 150ms ease;
+    --vie-transition: 200ms ease;
+    --vie-transition-slow: 300ms ease;
+    --vie-transition-slower: 500ms ease;
+    
+    /* =====================================================================
+       6. Z-INDEX SCALE
+       ===================================================================== */
+    
+    --vie-z-below: -1;
+    --vie-z-base: 0;
+    --vie-z-dropdown: 100;
+    --vie-z-sticky: 200;
+    --vie-z-fixed: 300;
+    --vie-z-modal-backdrop: 400;
+    --vie-z-modal: 500;
+    --vie-z-popover: 600;
+    --vie-z-tooltip: 700;
+    --vie-z-toast: 800;
+    
+    /* =====================================================================
+       7. BREAKPOINTS (Reference - dùng trong @media)
+       =====================================================================
+       
+       Mobile:        < 640px
+       Tablet:        640px - 1023px     @media (min-width: 640px)
+       Desktop:       1024px - 1279px    @media (min-width: 1024px)
+       Large Desktop: >= 1280px          @media (min-width: 1280px)
+       
+       ===================================================================== */
+}

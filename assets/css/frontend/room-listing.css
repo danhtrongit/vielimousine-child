@@ -1,0 +1,583 @@
+/**
+ * ============================================================================
+ * FILE: room-listing.css
+ * ============================================================================
+ * 
+ * MÔ TẢ:
+ * Styles cho trang danh sách phòng: filters, grid, room cards
+ * 
+ * MỤC LỤC:
+ * 1. Booking Filters
+ * 2. Room Grid
+ * 3. Room Card
+ * 4. Price Comparison (Dual Price)
+ * 5. Card Swiper
+ * 6. Room Detail Modal
+ * 7. Responsive
+ * 
+ * ----------------------------------------------------------------------------
+ * @package     VielimousineChild
+ * @version     2.0.0
+ * ============================================================================
+ */
+
+/* ==========================================================================
+   1. BOOKING FILTERS
+   ========================================================================== */
+
+.vie-booking-filters {
+    background: var(--vie-bg-light);
+    border-radius: var(--vie-radius-md);
+    padding: var(--vie-space-6);
+    margin-bottom: var(--vie-space-8);
+    border: 1px solid var(--vie-border);
+}
+
+.vie-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-4);
+    align-items: flex-end;
+}
+
+.vie-filter-item {
+    flex: 1;
+    min-width: 140px;
+}
+
+.vie-filter-item label {
+    display: block;
+    font-size: var(--vie-text-xs);
+    font-weight: var(--vie-font-semibold);
+    color: var(--vie-text);
+    margin-bottom: var(--vie-space-2);
+}
+
+.vie-filter-item input,
+.vie-filter-item select {
+    width: 100%;
+    padding: var(--vie-space-3) var(--vie-space-4);
+    border: 1px solid var(--vie-border);
+    border-radius: var(--vie-radius);
+    font-size: var(--vie-text-sm);
+    background: var(--vie-white);
+    transition: border-color var(--vie-transition), box-shadow var(--vie-transition);
+}
+
+.vie-filter-item input:focus,
+.vie-filter-item select:focus {
+    outline: none;
+    border-color: var(--vie-primary);
+    box-shadow: var(--vie-ring);
+}
+
+.vie-filter-action {
+    flex: 0 0 auto;
+}
+
+/* Children Ages */
+.vie-children-ages {
+    margin-top: var(--vie-space-4);
+    padding-top: var(--vie-space-4);
+    border-top: 1px dashed var(--vie-border);
+}
+
+.vie-ages-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-3);
+    margin-top: var(--vie-space-2);
+}
+
+.vie-age-input {
+    display: flex;
+    align-items: center;
+    gap: var(--vie-space-2);
+}
+
+.vie-age-input select {
+    width: 80px;
+    padding: var(--vie-space-2) var(--vie-space-3);
+    border: 1px solid var(--vie-border);
+    border-radius: var(--vie-radius-sm);
+    font-size: var(--vie-text-sm);
+}
+
+/* ==========================================================================
+   2. ROOM GRID
+   ========================================================================== */
+
+.vie-rooms-grid {
+    display: grid;
+    gap: var(--vie-space-6);
+}
+
+.vie-rooms-grid.columns-1 {
+    grid-template-columns: 1fr;
+}
+
+.vie-rooms-grid.columns-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.vie-rooms-grid.columns-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* ==========================================================================
+   3. ROOM CARD
+   ========================================================================== */
+
+.vie-room-card {
+    background: var(--vie-white);
+    border-radius: var(--vie-radius-md);
+    overflow: hidden;
+    box-shadow: var(--vie-shadow);
+    transition: transform var(--vie-transition-slow), box-shadow var(--vie-transition-slow);
+}
+
+.vie-room-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--vie-shadow-lg);
+}
+
+/* Room Image */
+.vie-room-image {
+    position: relative;
+    aspect-ratio: 16/10;
+    overflow: hidden;
+}
+
+.vie-room-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--vie-transition-slower);
+}
+
+.vie-room-card:hover .vie-room-image img {
+    transform: scale(1.05);
+}
+
+.vie-no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vie-bg-light);
+    color: var(--vie-secondary);
+}
+
+.vie-no-image .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+/* Room Badge */
+.vie-room-badge {
+    position: absolute;
+    top: var(--vie-space-3);
+    right: var(--vie-space-3);
+    padding: var(--vie-space-2) var(--vie-space-3);
+    border-radius: var(--vie-radius-full);
+    font-size: var(--vie-text-xs);
+    font-weight: var(--vie-font-semibold);
+}
+
+.vie-room-badge.sold-out {
+    background: var(--vie-danger);
+    color: var(--vie-white);
+}
+
+.vie-room-badge.limited {
+    background: var(--vie-warning);
+    color: var(--vie-white);
+}
+
+.vie-room-badge.stop-sell {
+    background: var(--vie-secondary);
+    color: var(--vie-white);
+}
+
+/* Room Info */
+.vie-room-info {
+    padding: var(--vie-space-5);
+}
+
+.vie-room-name {
+    margin: 0 0 var(--vie-space-3);
+    font-size: var(--vie-text-xl);
+    font-weight: var(--vie-font-bold);
+    color: var(--vie-text);
+}
+
+.vie-room-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-3);
+    margin-bottom: var(--vie-space-3);
+}
+
+.vie-meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--vie-space-1);
+    font-size: var(--vie-text-xs);
+    color: var(--vie-text-muted);
+}
+
+.vie-meta-item .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.vie-room-desc {
+    font-size: var(--vie-text-sm);
+    color: var(--vie-text-muted);
+    margin-bottom: var(--vie-space-3);
+    line-height: var(--vie-leading-normal);
+}
+
+/* Amenities */
+.vie-room-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-2);
+    margin-bottom: var(--vie-space-4);
+}
+
+.vie-amenity {
+    padding: var(--vie-space-1) var(--vie-space-3);
+    background: var(--vie-bg-light);
+    border-radius: var(--vie-radius-sm);
+    font-size: var(--vie-text-xs);
+    color: var(--vie-text-muted);
+}
+
+.vie-amenity.vie-more {
+    background: var(--vie-primary);
+    color: var(--vie-white);
+}
+
+/* Room Footer */
+.vie-room-footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--vie-space-4);
+    padding-top: var(--vie-space-4);
+    border-top: 1px solid var(--vie-border);
+}
+
+.vie-room-price {
+    display: flex;
+    flex-direction: column;
+}
+
+.vie-price-label {
+    font-size: var(--vie-text-xs);
+    color: var(--vie-text-muted);
+}
+
+.vie-room-actions {
+    display: flex;
+    gap: var(--vie-space-2);
+}
+
+.vie-room-actions .vie-btn {
+    flex: 1;
+    padding: var(--vie-space-3) var(--vie-space-4);
+    font-size: var(--vie-text-xs);
+}
+
+/* ==========================================================================
+   4. PRICE COMPARISON (Dual Price CRO)
+   ========================================================================== */
+
+.vie-price-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--vie-space-3);
+}
+
+.vie-price-option {
+    position: relative;
+    padding: var(--vie-space-3);
+    border-radius: var(--vie-radius);
+    text-align: center;
+    transition: all var(--vie-transition);
+}
+
+.vie-price-option.vie-price-room {
+    background: var(--vie-bg-light);
+    border: 1px solid var(--vie-border);
+}
+
+.vie-price-option.vie-price-combo {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid var(--vie-warning);
+}
+
+.vie-price-type-label {
+    display: block;
+    font-size: 11px;
+    font-weight: var(--vie-font-semibold);
+    text-transform: uppercase;
+    color: var(--vie-text-muted);
+    margin-bottom: var(--vie-space-1);
+}
+
+.vie-price-combo .vie-price-type-label {
+    color: #92400e;
+}
+
+.vie-price-amount {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--vie-space-1);
+}
+
+.vie-price-from {
+    font-size: 11px;
+    color: var(--vie-text-muted);
+}
+
+.vie-price-value {
+    font-size: var(--vie-text-lg);
+    font-weight: var(--vie-font-bold);
+    color: var(--vie-text);
+}
+
+.vie-price-combo .vie-price-value {
+    font-size: var(--vie-text-xl);
+    color: #b45309;
+}
+
+.vie-price-unit {
+    font-size: var(--vie-text-xs);
+    color: var(--vie-text-muted);
+}
+
+.vie-combo-includes {
+    display: block;
+    font-size: 10px;
+    color: #92400e;
+    margin-top: var(--vie-space-1);
+}
+
+/* Best Deal Badge */
+.vie-best-deal-badge {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 10px;
+    background: var(--vie-danger);
+    color: var(--vie-white);
+    font-size: 9px;
+    font-weight: var(--vie-font-bold);
+    text-transform: uppercase;
+    border-radius: var(--vie-radius-full);
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   5. CARD SWIPER
+   ========================================================================== */
+
+.vie-card-swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.vie-card-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vie-card-swiper .swiper-pagination {
+    bottom: 10px;
+}
+
+.vie-card-swiper .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+}
+
+.vie-card-swiper .swiper-pagination-bullet-active {
+    background: var(--vie-white);
+}
+
+/* ==========================================================================
+   6. ROOM DETAIL MODAL
+   ========================================================================== */
+
+.vie-modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--vie-space-6);
+}
+
+.vie-detail-gallery {
+    aspect-ratio: 4/3;
+    border-radius: var(--vie-radius-md) 0 0 var(--vie-radius-md);
+    overflow: hidden;
+}
+
+.vie-gallery-swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.vie-gallery-swiper .swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vie-detail-content {
+    padding: var(--vie-space-6);
+    display: flex;
+    flex-direction: column;
+}
+
+.vie-detail-title {
+    font-size: var(--vie-text-2xl);
+    font-weight: var(--vie-font-bold);
+    margin: 0 0 var(--vie-space-4);
+}
+
+.vie-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-4);
+    margin-bottom: var(--vie-space-5);
+    padding-bottom: var(--vie-space-4);
+    border-bottom: 1px solid var(--vie-border);
+}
+
+.vie-detail-section {
+    margin-bottom: var(--vie-space-5);
+}
+
+.vie-detail-section h4 {
+    font-size: var(--vie-text-sm);
+    font-weight: var(--vie-font-semibold);
+    text-transform: uppercase;
+    color: var(--vie-text-muted);
+    margin: 0 0 var(--vie-space-3);
+}
+
+.vie-amenities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-2);
+}
+
+.vie-description-text {
+    font-size: var(--vie-text-sm);
+    line-height: 1.7;
+    color: var(--vie-text-muted);
+}
+
+.vie-detail-footer {
+    margin-top: auto;
+    padding-top: var(--vie-space-5);
+    border-top: 1px solid var(--vie-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vie-detail-price .vie-price-value {
+    font-size: var(--vie-text-3xl);
+}
+
+/* ==========================================================================
+   7. RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 991px) {
+    .vie-rooms-grid.columns-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767px) {
+    .vie-rooms-grid.columns-2,
+    .vie-rooms-grid.columns-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .vie-filter-row {
+        flex-direction: column;
+    }
+
+    .vie-filter-item {
+        min-width: 100%;
+    }
+
+    .vie-booking-filters {
+        padding: var(--vie-space-4);
+    }
+
+    .vie-room-info {
+        padding: var(--vie-space-4);
+    }
+
+    .vie-room-footer {
+        flex-direction: column;
+        gap: var(--vie-space-3);
+        align-items: stretch;
+    }
+
+    .vie-room-actions {
+        justify-content: stretch;
+    }
+
+    .vie-room-actions .vie-btn {
+        flex: 1;
+    }
+
+    /* Price comparison mobile */
+    .vie-price-comparison {
+        gap: var(--vie-space-2);
+    }
+
+    .vie-price-option {
+        padding: var(--vie-space-3) var(--vie-space-2);
+    }
+
+    .vie-price-value {
+        font-size: var(--vie-text-base);
+    }
+
+    .vie-price-combo .vie-price-value {
+        font-size: var(--vie-text-lg);
+    }
+
+    .vie-best-deal-badge {
+        font-size: 8px;
+        padding: 2px 8px;
+    }
+
+    .vie-combo-includes {
+        font-size: 9px;
+    }
+
+    /* Modal mobile */
+    .vie-modal-body {
+        grid-template-columns: 1fr;
+    }
+
+    .vie-detail-gallery {
+        aspect-ratio: 16/9;
+        border-radius: var(--vie-radius-md) var(--vie-radius-md) 0 0;
+    }
+}

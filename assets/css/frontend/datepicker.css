@@ -1,0 +1,363 @@
+/**
+ * ============================================================================
+ * FILE: datepicker.css
+ * ============================================================================
+ * 
+ * MÔ TẢ:
+ * Custom styles cho jQuery UI Datepicker với price display
+ * 
+ * MỤC LỤC:
+ * 1. Base Datepicker
+ * 2. Header & Navigation
+ * 3. Calendar Grid
+ * 4. Day Cell với Price
+ * 5. Weekend Styles
+ * 6. States (Sold out, Stop sell, Past)
+ * 7. Selected/Active States
+ * 8. Legacy Datepicker (no prices)
+ * 9. Responsive
+ * 
+ * ----------------------------------------------------------------------------
+ * @package     VielimousineChild
+ * @version     2.0.0
+ * ============================================================================
+ */
+
+/* ==========================================================================
+   1. BASE DATEPICKER
+   ========================================================================== */
+
+#ui-datepicker-div.ui-datepicker {
+    z-index: 1000000 !important;
+    font-family: inherit;
+    border-radius: var(--vie-radius-lg);
+    box-shadow: var(--vie-shadow-xl);
+    border: none;
+    padding: var(--vie-space-4);
+    background: var(--vie-white) !important;
+    width: auto;
+    min-width: 300px;
+}
+
+#ui-datepicker-div.vie-datepicker-prices {
+    min-width: 380px;
+}
+
+/* ==========================================================================
+   2. HEADER & NAVIGATION
+   ========================================================================== */
+
+.vie-datepicker-prices .ui-datepicker-header {
+    background: none;
+    border: none;
+    padding: 0 var(--vie-space-1) var(--vie-space-4);
+    margin-bottom: var(--vie-space-2);
+    border-bottom: 1px solid var(--vie-gray-100);
+}
+
+.vie-datepicker-prices .ui-datepicker-title {
+    font-weight: var(--vie-font-semibold);
+    font-size: var(--vie-text-sm);
+    color: var(--vie-text);
+    letter-spacing: -0.01em;
+}
+
+/* Navigation Arrows */
+.vie-datepicker-prices .ui-datepicker-prev,
+.vie-datepicker-prices .ui-datepicker-next {
+    cursor: pointer;
+    border-radius: var(--vie-radius);
+    transition: all var(--vie-transition-fast);
+    top: 2px !important;
+    width: 32px;
+    height: 32px;
+}
+
+.vie-datepicker-prices .ui-datepicker-prev:hover,
+.vie-datepicker-prices .ui-datepicker-next:hover {
+    background: var(--vie-bg-light);
+}
+
+/* ==========================================================================
+   3. CALENDAR GRID
+   ========================================================================== */
+
+.vie-datepicker-prices .ui-datepicker-calendar {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 4px;
+}
+
+.vie-datepicker-prices .ui-datepicker-calendar th {
+    padding: var(--vie-space-2) 0;
+    font-size: 11px;
+    font-weight: var(--vie-font-medium);
+    color: var(--vie-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   4. DAY CELL VỚI PRICE
+   ========================================================================== */
+
+.vie-datepicker-prices .ui-datepicker-calendar td {
+    padding: 0;
+}
+
+.vie-datepicker-prices .ui-datepicker-calendar td a,
+.vie-datepicker-prices .ui-datepicker-calendar td span {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--vie-space-2) 2px;
+    border-radius: var(--vie-radius);
+    text-decoration: none;
+    transition: all var(--vie-transition-fast);
+    gap: 2px;
+}
+
+/* Mở rộng chỉ khi có giá */
+.vie-datepicker-prices td.vie-price-injected a {
+    min-height: 48px;
+    padding: 5px 2px 4px;
+}
+
+.vie-datepicker-prices .ui-datepicker-calendar td a:hover {
+    background: var(--vie-bg-light);
+    transform: scale(1.02);
+}
+
+/* Day Number */
+.vie-datepicker-prices .vie-day-number {
+    font-size: var(--vie-text-xs);
+    font-weight: var(--vie-font-medium);
+    color: var(--vie-gray-700);
+    line-height: 1;
+}
+
+/* Combo Price - Primary (đỏ, nổi bật) */
+.vie-datepicker-prices .vie-day-price.vie-price-combo {
+    font-size: 8px;
+    font-weight: var(--vie-font-semibold);
+    color: #dc2626;
+    background: transparent;
+    padding: 0;
+    white-space: nowrap;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+/* Room Price - Secondary (xám, nhỏ hơn) */
+.vie-datepicker-prices .vie-day-price.vie-price-room {
+    font-size: 7px;
+    font-weight: var(--vie-font-normal);
+    color: var(--vie-gray-400);
+    background: transparent;
+    padding: 0;
+    white-space: nowrap;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+/* Strikethrough for room price khi có combo */
+.vie-datepicker-prices .vie-day-price.vie-price-strikethrough {
+    text-decoration: line-through;
+    color: var(--vie-gray-300);
+}
+
+/* Single price (không có combo) - hiện như primary */
+.vie-datepicker-prices .vie-day-price:only-of-type.vie-price-room {
+    font-size: 8px;
+    font-weight: var(--vie-font-semibold);
+    color: #dc2626;
+    text-decoration: none;
+}
+
+/* ==========================================================================
+   5. WEEKEND STYLES
+   ========================================================================== */
+
+.vie-datepicker-prices td.vie-day-weekend a {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.vie-datepicker-prices td.vie-day-weekend .vie-day-number {
+    color: #92400e;
+}
+
+.vie-datepicker-prices td.vie-day-weekend .vie-price-combo {
+    color: #b45309;
+}
+
+/* ==========================================================================
+   6. STATES (Sold out, Stop sell, Past)
+   ========================================================================== */
+
+/* Sold out / Stop sell */
+.vie-datepicker-prices td.vie-day-sold-out,
+.vie-datepicker-prices td.vie-day-stop-sell {
+    opacity: 0.4;
+}
+
+.vie-datepicker-prices td.vie-day-sold-out .vie-day-number {
+    text-decoration: line-through;
+}
+
+.vie-price-sold-out {
+    font-size: 8px !important;
+    color: var(--vie-gray-200) !important;
+}
+
+/* Past days */
+.vie-datepicker-prices td.vie-day-past {
+    opacity: 0.3;
+}
+
+/* Other month */
+.vie-datepicker-prices .ui-datepicker-other-month {
+    opacity: 0.25;
+}
+
+/* ==========================================================================
+   7. SELECTED/ACTIVE STATES
+   ========================================================================== */
+
+/* Today */
+.vie-datepicker-prices .ui-state-highlight {
+    background: var(--vie-gray-100);
+    position: relative;
+}
+
+.vie-datepicker-prices .ui-state-highlight::before {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--vie-primary);
+    border-radius: 50%;
+}
+
+/* Selected/Active */
+.vie-datepicker-prices .ui-state-active {
+    background: var(--vie-primary) !important;
+    box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.4);
+}
+
+.vie-datepicker-prices .ui-state-active .vie-day-number {
+    color: var(--vie-white);
+    font-weight: var(--vie-font-semibold);
+}
+
+.vie-datepicker-prices .ui-state-active .vie-price-combo,
+.vie-datepicker-prices .ui-state-active .vie-price-room {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* ==========================================================================
+   8. LEGACY DATEPICKER (no prices version)
+   ========================================================================== */
+
+.ui-datepicker td a,
+.ui-datepicker td span {
+    text-align: center;
+    padding: var(--vie-space-2);
+    border-radius: var(--vie-radius-sm);
+}
+
+.ui-datepicker td a:hover {
+    background: var(--vie-bg-light);
+}
+
+.ui-datepicker .ui-state-active {
+    background: var(--vie-primary) !important;
+    color: var(--vie-white) !important;
+}
+
+.ui-datepicker .ui-state-highlight {
+    background: var(--vie-bg-light);
+}
+
+/* ==========================================================================
+   9. RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    #ui-datepicker-div.vie-datepicker-prices {
+        min-width: 320px;
+        max-width: calc(100vw - 16px);
+        padding: var(--vie-space-3);
+        border-radius: var(--vie-radius-md);
+    }
+
+    .vie-datepicker-prices .ui-datepicker-header {
+        padding: 0 0 var(--vie-space-3);
+        margin-bottom: var(--vie-space-1);
+    }
+
+    .vie-datepicker-prices .ui-datepicker-calendar {
+        border-spacing: 2px;
+    }
+
+    .vie-datepicker-prices .ui-datepicker-calendar th {
+        padding: var(--vie-space-1) 0;
+        font-size: 9px;
+    }
+
+    .vie-datepicker-prices .ui-datepicker-calendar td a,
+    .vie-datepicker-prices .ui-datepicker-calendar td span {
+        padding: 3px 1px;
+        border-radius: var(--vie-radius-sm);
+    }
+
+    .vie-datepicker-prices td.vie-price-injected a {
+        min-height: 40px;
+    }
+
+    .vie-datepicker-prices .vie-day-number {
+        font-size: 11px;
+    }
+
+    .vie-datepicker-prices .vie-day-price.vie-price-combo,
+    .vie-datepicker-prices .vie-day-price:only-of-type.vie-price-room {
+        font-size: 6px;
+    }
+
+    .vie-datepicker-prices .vie-day-price.vie-price-room {
+        font-size: 5px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 374px) {
+    #ui-datepicker-div.vie-datepicker-prices {
+        min-width: 290px;
+        padding: var(--vie-space-2);
+    }
+
+    .vie-datepicker-prices .ui-datepicker-calendar {
+        border-spacing: 1px;
+    }
+
+    .vie-datepicker-prices td.vie-price-injected a {
+        min-height: 36px;
+    }
+
+    .vie-datepicker-prices .vie-day-number {
+        font-size: 10px;
+    }
+
+    .vie-datepicker-prices .vie-day-price.vie-price-combo,
+    .vie-datepicker-prices .vie-day-price:only-of-type.vie-price-room {
+        font-size: 5px;
+    }
+
+    /* Ẩn room price trên màn hình rất nhỏ */
+    .vie-datepicker-prices .vie-day-price.vie-price-room {
+        display: none;
+    }
+}

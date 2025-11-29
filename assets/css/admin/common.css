@@ -1,0 +1,323 @@
+/**
+ * Hotel Rooms Admin - Common Styles
+ * 
+ * Shared styles used across all admin pages.
+ * Uses WordPress native classes with custom branding.
+ * 
+ * @package VieHotelRooms
+ * @since 2.0.0
+ */
+
+/* ===== WORDPRESS NATIVE OVERRIDES ===== */
+.wp-core-ui .button {
+    min-width: fit-content;
+}
+
+/* Primary Button - Dark Green Theme */
+.hotel-plugin-wrap .button-primary,
+.vie-button-primary {
+    background-color: var(--hotel-primary) !important;
+    border-color: var(--hotel-primary) !important;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.hotel-plugin-wrap .button-primary:hover,
+.hotel-plugin-wrap .button-primary:focus,
+.vie-button-primary:hover,
+.vie-button-primary:focus {
+    background-color: var(--hotel-primary-hover) !important;
+    border-color: var(--hotel-primary-hover) !important;
+    color: #fff;
+}
+
+/* ===== BADGE COMPONENTS ===== */
+
+/* General Badge Base */
+.hotel-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--badge-radius);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.hotel-badge.success {
+    background: var(--status-success);
+    color: var(--text-success);
+}
+
+.hotel-badge.warning {
+    background: var(--status-warning);
+    color: var(--text-warning);
+}
+
+.hotel-badge.info {
+    background: var(--status-info);
+    color: var(--text-info);
+}
+
+.hotel-badge.danger {
+    background: var(--status-danger);
+    color: var(--text-danger);
+}
+
+.hotel-badge.default {
+    background: var(--status-default);
+    color: var(--text-default);
+}
+
+/* Booking Status Badges */
+.vie-booking-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: var(--badge-radius);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.vie-booking-status-badge.vie-badge-warning {
+    background-color: var(--status-warning);
+    color: var(--text-warning);
+}
+
+.vie-booking-status-badge.vie-badge-info {
+    background-color: var(--status-info);
+    color: var(--text-info);
+}
+
+.vie-booking-status-badge.vie-badge-success {
+    background-color: var(--status-success);
+    color: var(--text-success);
+}
+
+.vie-booking-status-badge.vie-badge-danger {
+    background-color: var(--status-danger);
+    color: var(--text-danger);
+}
+
+.vie-booking-status-badge.vie-badge-default {
+    background-color: var(--status-default);
+    color: var(--text-default);
+}
+
+.vie-booking-status-badge.vie-badge-purple {
+    background-color: var(--status-purple);
+    color: var(--text-purple);
+}
+
+/* Status Badges (for room status) */
+.vie-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--badge-radius);
+    font-size: 12px;
+}
+
+.vie-status-active {
+    background: var(--status-success);
+    color: var(--text-success);
+}
+
+.vie-status-inactive {
+    background: var(--status-danger);
+    color: var(--text-danger);
+}
+
+.vie-status-draft {
+    background: var(--status-default);
+    color: var(--text-default);
+}
+
+/* ===== MODAL STYLES (WP Native Compatible) ===== */
+
+.vie-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vie-modal-box {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow: auto;
+    border-radius: var(--modal-radius);
+    box-shadow: var(--modal-shadow);
+}
+
+.vie-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--wp-border);
+    background: var(--wp-bg-light);
+}
+
+.vie-modal-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--wp-text-primary);
+}
+
+.vie-modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--wp-text-secondary);
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--badge-radius);
+    transition: all 0.15s;
+}
+
+.vie-modal-close:hover {
+    background: #e0e0e0;
+    color: var(--text-danger);
+}
+
+.vie-modal-close .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.vie-modal-body {
+    padding: var(--spacing-xl);
+}
+
+.vie-modal-body .form-field {
+    margin-bottom: var(--spacing-lg);
+}
+
+.vie-modal-body .form-field:last-child {
+    margin-bottom: 0;
+}
+
+.vie-modal-body .form-field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+    font-size: 13px;
+    color: var(--wp-text-primary);
+}
+
+.vie-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-top: 1px solid var(--wp-border);
+    background: var(--wp-bg-light);
+}
+
+/* Legacy modal styles (for backward compatibility) */
+.vie-modal-box .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #dcdcde;
+    background: #f6f7f7;
+}
+
+.vie-modal-box .header h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.vie-modal-box .header .close {
+    background: 0;
+    border: 0;
+    font-size: 20px;
+    cursor: pointer;
+    color: #646970;
+}
+
+.vie-modal-box .header .close:hover {
+    color: #d63638;
+}
+
+.vie-modal-box .body {
+    padding: 16px;
+}
+
+.vie-modal-box .body .row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.vie-modal-box .body .row .col {
+    flex: 1;
+}
+
+.vie-modal-box .body .row label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.vie-modal-box .body .row input,
+.vie-modal-box .body .row select {
+    width: 100%;
+}
+
+.vie-modal-box .footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid #dcdcde;
+    background: #f6f7f7;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+.required {
+    color: #d63638;
+}
+
+.vie-text-muted {
+    color: var(--wp-text-secondary);
+}
+
+.vie-text-primary {
+    color: var(--hotel-primary);
+}
+
+.vie-bg-light {
+    background: var(--wp-bg-light);
+}
+
+.vie-border {
+    border: 1px solid var(--wp-border);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 782px) {
+    .vie-modal-box {
+        max-width: 95%;
+    }
+
+    .vie-booking-status-badge {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+}
