@@ -1,7 +1,7 @@
 # TASK OVERVIEW - MIGRATION V2.0
 
 **Dự án:** Vielimousine Child Theme v2.0  
-**Tổng thời gian ước tính:** 10 ngày làm việc  
+**Tổng thời gian ước tính:** 15 ngày làm việc  
 **Ngày bắt đầu:** 29/11/2024  
 **Người thực hiện:** AI Assistant (Cascade)
 
@@ -19,6 +19,13 @@
 | [TASK-06-TEMPLATES.md](./TASK-06-TEMPLATES.md) | Phase 2: Templates | 1 ngày | ✅ Hoàn thành |
 | [TASK-07-TESTING.md](./TASK-07-TESTING.md) | Phase 3: Testing | 1.5 ngày | ✅ Hoàn thành |
 | [TASK-08-DEPLOY.md](./TASK-08-DEPLOY.md) | Phase 3: Deploy | 0.5 ngày | ✅ Hoàn thành |
+| [TASK-09-CORE-CLASSES.md](./TASK-09-CORE-CLASSES.md) | Phase 4: Core | 1 ngày | ⬜ Chưa bắt đầu |
+| [TASK-10-HOTEL-ROOMS-ADMIN.md](./TASK-10-HOTEL-ROOMS-ADMIN.md) | Phase 4: Admin | 1.5 ngày | ⬜ Chưa bắt đầu |
+| [TASK-11-HOTEL-ROOMS-FRONTEND.md](./TASK-11-HOTEL-ROOMS-FRONTEND.md) | Phase 4: Frontend | 1 ngày | ⬜ Chưa bắt đầu |
+| [TASK-12-COUPONS-MODULE.md](./TASK-12-COUPONS-MODULE.md) | Phase 4: Coupons | 0.5 ngày | ⬜ Chưa bắt đầu |
+| [TASK-13-EMAIL-TEMPLATES.md](./TASK-13-EMAIL-TEMPLATES.md) | Phase 4: Email | 0.5 ngày | ⬜ Chưa bắt đầu |
+| [TASK-14-MAIN-BOOTSTRAP.md](./TASK-14-MAIN-BOOTSTRAP.md) | Phase 4: Bootstrap | 0.5 ngày | ⬜ Chưa bắt đầu |
+| [TASK-15-FINAL-TESTING.md](./TASK-15-FINAL-TESTING.md) | Phase 5: Final Test | 1 ngày | ⬜ Chưa bắt đầu |
 
 ---
 
@@ -100,9 +107,20 @@ PHASE 2: LOGIC
 [x] TASK-05: PHP classes hoàn thành
 [x] TASK-06: Templates hoàn thành
 
-PHASE 3: FINALIZE
+PHASE 3: FINALIZE (Cấu trúc)
 [x] TASK-07: Testing PASSED (Automated)
 [x] TASK-08: Deploy SUCCESS (Git committed)
+
+PHASE 4: BUSINESS LOGIC MIGRATION
+[ ] TASK-09: Core Classes
+[ ] TASK-10: Hotel Rooms Admin
+[ ] TASK-11: Hotel Rooms Frontend
+[ ] TASK-12: Coupons Module
+[ ] TASK-13: Email Templates
+[ ] TASK-14: Main Bootstrap Update
+
+PHASE 5: FINAL
+[ ] TASK-15: Final Testing & Cleanup
 ```
 
 ### Daily Standup Template
