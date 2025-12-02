@@ -165,10 +165,42 @@ if (file_exists(VIE_THEME_PATH . '/inc/Services/Email/EmailService.php')) {
     require_once VIE_THEME_PATH . '/inc/classes/class-email-manager.php';
 }
 
-// SePay Payment Gateway
-// Sử dụng file cũ class-sepay-gateway.php để giữ nguyên logic OAuth đang hoạt động
-// Services mới (v2.1) bị tạm disable do lỗi "Invalid redirect URI"
-if (file_exists(VIE_THEME_PATH . '/inc/classes/class-sepay-gateway.php')) {
+// SePay Payment Gateway (v2.1: Split thành 9 services)
+// Thứ tự load theo dependency graph
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Payment/SepaySettingsManager.php')) {
+    // 1. Foundation: Settings Manager (no dependencies)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepaySettingsManager.php';
+
+    // 2. Foundation: Security Validator (no dependencies)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepaySecurityValidator.php';
+
+    // 3. Foundation: Token Manager (no dependencies)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayTokenManager.php';
+
+    // 4. API Client (depends on: TokenManager)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayAPIClient.php';
+
+    // 5. OAuth Service (depends on: TokenManager, Settings)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayOAuthService.php';
+
+    // 6. Bank Account Service (depends on: APIClient)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayBankAccountService.php';
+
+    // 7. Payment Service (depends on: Settings, BankAccount)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayPaymentService.php';
+
+    // 8. Webhook Handler (depends on: APIClient, Security, Payment)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayWebhookHandler.php';
+
+    // 9. Main Gateway Facade (depends on: ALL above services)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayGateway.php';
+
+    // Initialize gateway instance to register hooks
+    if (class_exists('Vie_SePay_Gateway')) {
+        Vie_SePay_Gateway::get_instance();
+    }
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-sepay-gateway.php')) {
+    // Fallback to old monolithic file (backward compatibility)
     require_once VIE_THEME_PATH . '/inc/classes/class-sepay-gateway.php';
 }
 
