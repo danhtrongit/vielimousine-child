@@ -31,7 +31,11 @@ defined('ABSPATH') || exit;
             <div class="vie-detail-gallery">
                 <div class="vie-gallery-swiper swiper">
                     <div class="swiper-wrapper" id="vie-detail-gallery-wrapper">
-                        <!-- Ảnh sẽ được inject qua JS -->
+                        <!-- Ảnh sẽ được inject qua JS hoặc hiển thị placeholder -->
+                        <div class="swiper-slide vie-no-image">
+                            <span class="dashicons dashicons-format-image"></span>
+                            <p>Đang tải ảnh...</p>
+                        </div>
                     </div>
                     <div class="swiper-pagination"></div>
                     <div class="swiper-button-prev"></div>

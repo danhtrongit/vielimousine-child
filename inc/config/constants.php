@@ -1,8 +1,17 @@
 <?php
 /**
- * Google Sheets Coupon System - Configuration Constants
+ * ============================================================================
+ * TÊN FILE: constants.php
+ * ============================================================================
  * 
- * @package VielimousineChild
+ * MÔ TẢ:
+ * Configuration constants cho các modules.
+ * 
+ * ----------------------------------------------------------------------------
+ * @package     VielimousineChild
+ * @subpackage  Config
+ * @version     2.0.0
+ * ============================================================================
  */
 
 defined('ABSPATH') || exit;
@@ -97,4 +106,42 @@ if (!defined('VL_COUPON_LOG_FILE')) {
 // Maximum log file size (bytes) - 5MB
 if (!defined('VL_COUPON_MAX_LOG_SIZE')) {
     define('VL_COUPON_MAX_LOG_SIZE', 5 * 1024 * 1024);
+}
+
+/**
+ * ============================================================================
+ * VIE v2.0 ALIASES
+ * ============================================================================
+ * Constants cho architecture v2.0
+ */
+
+// Coupon Sheet ID (alias)
+if (!defined('VIE_COUPON_SHEET_ID')) {
+    define('VIE_COUPON_SHEET_ID', VL_COUPON_SHEET_ID);
+}
+
+// Coupon Sheet Name (alias)
+if (!defined('VIE_COUPON_SHEET_NAME')) {
+    define('VIE_COUPON_SHEET_NAME', VL_COUPON_SHEET_NAME);
+}
+
+/**
+ * ============================================================================
+ * HOTEL ROOMS MODULE CONSTANTS
+ * ============================================================================
+ */
+
+// Hotel Rooms module path
+if (!defined('VIE_HOTEL_ROOMS_PATH')) {
+    define('VIE_HOTEL_ROOMS_PATH', VIE_THEME_PATH . '/inc/hotel-rooms');
+}
+
+// Hotel Rooms module URL
+if (!defined('VIE_HOTEL_ROOMS_URL')) {
+    define('VIE_HOTEL_ROOMS_URL', VIE_THEME_URL . '/inc/hotel-rooms');
+}
+
+// Hotel Rooms version
+if (!defined('VIE_HOTEL_ROOMS_VERSION')) {
+    define('VIE_HOTEL_ROOMS_VERSION', '2.0.0');
 }

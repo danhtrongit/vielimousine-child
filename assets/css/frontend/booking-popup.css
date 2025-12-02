@@ -1,25 +1,12 @@
 /**
  * ============================================================================
- * FILE: booking-popup.css
+ * FILE: booking-popup.css - Simplified
  * ============================================================================
- * 
- * MÔ TẢ:
- * Styles cho modal đặt phòng: popup, steps, price summary, form
- * 
- * MỤC LỤC:
- * 1. Modal Base
- * 2. Booking Header & Steps
- * 3. Price Type Radio
- * 4. Price Summary
- * 5. Booking Footer
- * 6. Success Modal
- * 7. Transport Section
- * 8. Invoice Section
- * 9. Responsive
- * 
- * ----------------------------------------------------------------------------
+ *
+ * CSS tối giản cho modal đặt phòng
+ *
  * @package     VielimousineChild
- * @version     2.0.0
+ * @version     3.0.0 (Simplified)
  * ============================================================================
  */
 
@@ -34,70 +21,37 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--vie-space-5);
+    padding: var(--vie-space-4);
 }
 
 .vie-modal-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
 }
 
 .vie-modal-container {
     position: relative;
     background: var(--vie-white);
-    border-radius: var(--vie-radius-md);
+    border-radius: var(--vie-radius);
     max-height: 90vh;
     overflow-y: auto;
-    animation: vieModalIn 0.3s ease;
+    width: 100%;
+    max-width: 600px;
 }
 
 body.vie-modal-open {
     overflow: hidden;
 }
 
-/* Ensure datepicker input is clickable */
-.vie-modal-container input.vie-datepicker {
-    cursor: pointer;
-}
-
-@keyframes vieModalIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
-
-/* Modal Sizes */
-.vie-modal-sm {
-    width: 100%;
-    max-width: 420px;
-}
-
-.vie-modal-md {
-    width: 100%;
-    max-width: 600px;
-}
-
-.vie-modal-lg {
-    width: 100%;
-    max-width: 1000px;
-}
-
-/* Modal Close */
 .vie-modal-close {
     position: absolute;
     top: var(--vie-space-4);
     right: var(--vie-space-4);
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border: none;
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--vie-bg-light);
     border-radius: 50%;
     font-size: 24px;
     cursor: pointer;
@@ -105,40 +59,47 @@ body.vie-modal-open {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--vie-transition);
 }
 
 .vie-modal-close:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--vie-border);
 }
 
 /* ==========================================================================
-   2. BOOKING HEADER & STEPS
+   2. HEADER
    ========================================================================== */
 
 .vie-booking-header {
-    padding: var(--vie-space-6) var(--vie-space-6) 0;
+    padding: var(--vie-space-6);
     text-align: center;
-}
-
-.vie-booking-header h2 {
-    margin: 0 0 var(--vie-space-2);
-    font-size: var(--vie-text-2xl);
+    border-bottom: 1px solid var(--vie-border);
 }
 
 .vie-booking-room-name {
-    color: var(--vie-primary);
-    font-weight: var(--vie-font-semibold);
-    margin: 0;
+    margin: 0 0 var(--vie-space-2);
+    font-size: var(--vie-text-xl);
+    color: var(--vie-text);
 }
 
-/* Booking Steps */
+.vie-booking-price {
+    color: var(--vie-primary);
+    font-size: var(--vie-text-lg);
+}
+
+.vie-booking-price strong {
+    font-weight: var(--vie-font-bold);
+}
+
+/* ==========================================================================
+   3. STEPS
+   ========================================================================== */
+
 .vie-booking-steps {
     display: flex;
     justify-content: center;
-    gap: var(--vie-space-6);
+    gap: var(--vie-space-8);
     padding: var(--vie-space-5);
-    margin-bottom: var(--vie-space-2);
+    border-bottom: 1px solid var(--vie-border);
 }
 
 .vie-step {
@@ -146,7 +107,6 @@ body.vie-modal-open {
     align-items: center;
     gap: var(--vie-space-2);
     opacity: 0.4;
-    transition: opacity var(--vie-transition-slow);
 }
 
 .vie-step.active {
@@ -154,14 +114,14 @@ body.vie-modal-open {
 }
 
 .vie-step-num {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--vie-border);
     border-radius: 50%;
-    font-size: var(--vie-text-xs);
+    font-size: var(--vie-text-sm);
     font-weight: var(--vie-font-semibold);
 }
 
@@ -170,46 +130,182 @@ body.vie-modal-open {
     color: var(--vie-white);
 }
 
-.vie-step-label {
-    font-size: var(--vie-text-sm);
-    font-weight: var(--vie-font-medium);
-}
-
-.vie-booking-step-content {
-    padding: 0 var(--vie-space-6) var(--vie-space-6);
-}
-
 /* ==========================================================================
-   3. PRICE TYPE RADIO
+   4. FORM
    ========================================================================== */
 
-.vie-price-type {
+.vie-booking-step-content {
+    padding: var(--vie-space-6);
+}
+
+.vie-detail-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--vie-space-3);
+    margin-bottom: var(--vie-space-5);
+    padding-bottom: var(--vie-space-4);
+    border-bottom: 1px solid var(--vie-border);
+}
+
+.vie-detail-meta .vie-meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--vie-space-2);
+    font-size: var(--vie-text-sm);
+    color: var(--vie-text);
+    background: var(--vie-bg-light);
+    padding: var(--vie-space-2) var(--vie-space-3);
+    border-radius: var(--vie-radius);
+}
+
+.vie-detail-meta .vie-meta-item .dashicons {
+    color: var(--vie-primary);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.vie-detail-section {
     margin-bottom: var(--vie-space-5);
 }
 
-.vie-price-type > label {
-    display: block;
+.vie-detail-section h4 {
+    font-size: var(--vie-text-sm);
+    font-weight: var(--vie-font-bold);
+    text-transform: uppercase;
+    color: var(--vie-text);
+    margin: 0 0 var(--vie-space-3);
+    letter-spacing: 0.05em;
+}
+
+.vie-amenities-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-2);
+}
+
+.vie-amenities-list .vie-amenity {
+    padding: var(--vie-space-2) var(--vie-space-3);
+    background: var(--vie-white);
+    border: 1px solid var(--vie-border);
+    border-radius: var(--vie-radius-full);
+    font-size: var(--vie-text-xs);
+    color: var(--vie-text);
     font-weight: var(--vie-font-medium);
-    margin-bottom: var(--vie-space-3);
+    display: flex;
+    align-items: center;
+    gap: var(--vie-space-1);
+}
+
+.vie-amenities-list .vie-amenity::before {
+    content: '\f147';
+    /* dashicons-yes */
+    font-family: 'dashicons';
+    color: var(--vie-success);
+    font-size: 14px;
+}
+
+.vie-booking-step-content h3 {
+    margin: 0 0 var(--vie-space-4);
+    font-size: var(--vie-text-lg);
+    font-weight: var(--vie-font-semibold);
+    color: var(--vie-text);
+    padding-bottom: var(--vie-space-3);
+    border-bottom: 1px solid var(--vie-border);
+}
+
+.vie-booking-step-content h4 {
+    margin: var(--vie-space-4) 0 var(--vie-space-3);
+    font-size: var(--vie-text-base);
+    font-weight: var(--vie-font-semibold);
     color: var(--vie-text);
 }
 
+/* Form Groups */
+.vie-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--vie-space-4);
+    margin-bottom: var(--vie-space-4);
+}
+
+.vie-form-group {
+    margin-bottom: var(--vie-space-4);
+}
+
+.vie-form-group label {
+    display: block;
+    font-size: var(--vie-text-sm);
+    font-weight: var(--vie-font-medium);
+    color: var(--vie-text);
+    margin-bottom: var(--vie-space-2);
+}
+
+.vie-form-group label .required {
+    color: var(--vie-danger);
+}
+
+/* Form Controls */
+.vie-form-group input[type="text"],
+.vie-form-group input[type="email"],
+.vie-form-group input[type="tel"],
+.vie-form-group select,
+.vie-form-group textarea {
+    width: 100%;
+    padding: var(--vie-space-3);
+    border: 1px solid var(--vie-border);
+    border-radius: var(--vie-radius);
+    font-size: var(--vie-text-sm);
+    font-family: inherit;
+    background: var(--vie-white);
+}
+
+.vie-form-group input:focus,
+.vie-form-group select:focus,
+.vie-form-group textarea:focus {
+    outline: none;
+    border-color: var(--vie-primary);
+}
+
+.vie-form-group select {
+    cursor: pointer;
+}
+
+.vie-form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* ==========================================================================
+   5. PRICE TYPE RADIO
+   ========================================================================== */
+
+.vie-price-type {
+    margin-bottom: var(--vie-space-4);
+}
+
+.vie-price-type>label {
+    display: block;
+    font-size: var(--vie-text-sm);
+    font-weight: var(--vie-font-medium);
+    color: var(--vie-text);
+    margin-bottom: var(--vie-space-3);
+}
+
 .vie-radio-group {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--vie-space-3);
 }
 
 .vie-radio {
     display: flex;
-    flex-direction: row;
     align-items: flex-start;
     gap: var(--vie-space-3);
     padding: var(--vie-space-4);
     border: 2px solid var(--vie-border);
     border-radius: var(--vie-radius);
     cursor: pointer;
-    transition: border-color var(--vie-transition), background var(--vie-transition);
     position: relative;
 }
 
@@ -226,203 +322,75 @@ body.vie-modal-open {
     cursor: pointer;
 }
 
-.vie-radio input:checked + .vie-radio-label strong {
-    color: var(--vie-primary);
-}
-
 .vie-radio:has(input:checked) {
     border-color: var(--vie-primary);
-    background: rgba(37, 99, 235, 0.05);
+    background: var(--vie-primary-50);
 }
 
-.vie-radio-label {
-    display: flex;
-    flex-direction: column;
+.vie-radio-recommended {
+    border-color: var(--vie-warning);
+}
+
+.vie-radio-recommended:has(input:checked) {
+    border-color: var(--vie-warning);
+    background: var(--vie-warning-bg);
+}
+
+.vie-radio-badge {
+    position: absolute;
+    top: -10px;
+    left: var(--vie-space-3);
+    padding: var(--vie-space-1) var(--vie-space-2);
+    background: var(--vie-warning);
+    color: var(--vie-white);
+    font-size: 10px;
+    font-weight: var(--vie-font-bold);
+    text-transform: uppercase;
+    border-radius: var(--vie-radius);
+}
+
+.vie-radio span {
     flex: 1;
-    gap: 2px;
 }
 
-.vie-radio-label strong {
+.vie-radio strong {
+    display: block;
     font-size: var(--vie-text-sm);
     font-weight: var(--vie-font-semibold);
     color: var(--vie-text);
+    margin-bottom: 2px;
 }
 
-.vie-radio-label small {
+.vie-radio small {
     font-size: var(--vie-text-xs);
     color: var(--vie-text-muted);
 }
 
 /* ==========================================================================
-   4. PRICE SUMMARY
+   6. PRICE SUMMARY
    ========================================================================== */
 
 .vie-price-summary {
     background: var(--vie-bg-light);
     border-radius: var(--vie-radius);
-    padding: var(--vie-space-5);
-    margin-top: var(--vie-space-2);
-    transition: background var(--vie-transition-slow), border-color var(--vie-transition-slow);
+    padding: var(--vie-space-4);
+    margin-bottom: var(--vie-space-4);
 }
 
-/* Combo selected highlight */
-.vie-price-summary.vie-combo-selected {
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-    border: 2px solid #fbbf24;
-}
-
-/* Placeholder */
 .vie-summary-placeholder {
     text-align: center;
     color: var(--vie-text-muted);
-    padding: var(--vie-space-5);
+    padding: var(--vie-space-4);
 }
 
-.vie-summary-placeholder .dashicons {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-    margin-bottom: var(--vie-space-2);
-}
-
-/* Error State */
-.vie-summary-placeholder.vie-error {
-    background: var(--vie-danger-bg);
-    border: 1px solid #fecaca;
-    border-radius: var(--vie-radius);
-    color: #dc2626;
-    padding: var(--vie-space-4) var(--vie-space-5);
-}
-
-.vie-summary-placeholder.vie-error p {
+.vie-summary-placeholder p {
     margin: 0;
-    font-size: var(--vie-text-sm);
-    font-weight: var(--vie-font-medium);
-    line-height: var(--vie-leading-normal);
-}
-
-.vie-summary-placeholder.vie-error::before {
-    content: '⚠️';
-    display: block;
-    font-size: 24px;
-    margin-bottom: var(--vie-space-2);
 }
 
 .vie-price-summary.has-data .vie-summary-placeholder {
     display: none;
 }
 
-.vie-price-summary .vie-summary-placeholder.vie-error {
-    display: block !important;
-}
-
-/* Summary Header */
-.vie-summary-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--vie-space-4);
-    padding-bottom: var(--vie-space-3);
-    border-bottom: 1px dashed var(--vie-border);
-}
-
-.vie-summary-title {
-    font-size: var(--vie-text-base);
-    font-weight: var(--vie-font-bold);
-    color: var(--vie-text);
-}
-
-.vie-combo-badge {
-    padding: var(--vie-space-1) var(--vie-space-3);
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: var(--vie-white);
-    font-size: 11px;
-    font-weight: var(--vie-font-bold);
-    text-transform: uppercase;
-    border-radius: var(--vie-radius-full);
-}
-
-/* Breakdown Section */
-.vie-breakdown-section {
-    margin-bottom: var(--vie-space-4);
-}
-
-.vie-breakdown-label {
-    font-size: var(--vie-text-xs);
-    font-weight: var(--vie-font-semibold);
-    color: var(--vie-text-muted);
-    text-transform: uppercase;
-    margin-bottom: var(--vie-space-2);
-}
-
-.vie-breakdown-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--vie-space-2) 0;
-    font-size: var(--vie-text-xs);
-}
-
-.vie-breakdown-detail {
-    color: var(--vie-text-muted);
-}
-
-.vie-breakdown-value {
-    font-weight: var(--vie-font-semibold);
-    color: var(--vie-text);
-}
-
-/* Weekend Row */
-.vie-weekend-row {
-    background: rgba(245, 158, 11, 0.1);
-    margin: var(--vie-space-1) calc(var(--vie-space-2) * -1);
-    padding: var(--vie-space-2);
-    border-radius: var(--vie-radius-sm);
-}
-
-.vie-weekend-badge {
-    display: inline-block;
-    padding: 2px 6px;
-    background: #fbbf24;
-    color: #78350f;
-    font-size: 10px;
-    font-weight: var(--vie-font-semibold);
-    border-radius: var(--vie-radius-sm);
-    margin-left: var(--vie-space-1);
-}
-
-/* Subtotal Row */
-.vie-subtotal-row {
-    padding-top: var(--vie-space-3);
-    border-top: 1px solid var(--vie-border);
-    font-weight: var(--vie-font-semibold);
-}
-
-/* Surcharges Section */
-.vie-surcharges-section {
-    margin: var(--vie-space-4) 0;
-    padding: var(--vie-space-3);
-    background: rgba(239, 68, 68, 0.05);
-    border-radius: var(--vie-radius);
-    border-left: 3px solid var(--vie-danger);
-}
-
-.vie-surcharges-section .vie-breakdown-label {
-    color: var(--vie-danger);
-    margin-bottom: var(--vie-space-2);
-}
-
-.vie-surcharge-detail {
-    font-size: var(--vie-text-xs);
-    color: var(--vie-text-muted);
-}
-
-.vie-surcharge-value {
-    font-weight: var(--vie-font-semibold);
-    color: var(--vie-danger);
-}
-
-/* Summary Rows */
 .vie-summary-row {
     display: flex;
     justify-content: space-between;
@@ -430,43 +398,58 @@ body.vie-modal-open {
     font-size: var(--vie-text-sm);
 }
 
-.vie-summary-row.vie-summary-surcharge {
-    color: var(--vie-text-muted);
-    font-size: var(--vie-text-xs);
-    padding-left: var(--vie-space-4);
-}
-
 .vie-summary-row.vie-summary-total {
     margin-top: var(--vie-space-3);
-    padding-top: var(--vie-space-4);
+    padding-top: var(--vie-space-3);
     border-top: 2px solid var(--vie-border);
     font-size: var(--vie-text-lg);
     font-weight: var(--vie-font-bold);
 }
 
-.vie-combo-selected .vie-summary-row.vie-summary-total {
-    border-top-color: #fbbf24;
-}
-
 .vie-summary-row.vie-summary-total .vie-summary-value {
     color: var(--vie-primary);
-    font-size: var(--vie-text-2xl);
+    font-size: var(--vie-text-xl);
 }
 
-.vie-combo-selected .vie-summary-row.vie-summary-total .vie-summary-value {
-    color: #b45309;
+/* ==========================================================================
+   7. COUPON
+   ========================================================================== */
+
+.vie-coupon-input-group {
+    display: flex;
+    gap: var(--vie-space-2);
 }
 
-/* Booking Summary Step 2 */
+.vie-coupon-input-group input {
+    flex: 1;
+}
+
+.vie-coupon-message {
+    margin-top: var(--vie-space-2);
+    padding: var(--vie-space-2) var(--vie-space-3);
+    border-radius: var(--vie-radius);
+    font-size: var(--vie-text-sm);
+}
+
+.vie-coupon-message.success {
+    background: var(--vie-success-bg);
+    color: var(--vie-success-text);
+}
+
+.vie-coupon-message.error {
+    background: var(--vie-danger-bg);
+    color: var(--vie-danger-text);
+}
+
+/* ==========================================================================
+   8. BOOKING SUMMARY
+   ========================================================================== */
+
 .vie-booking-summary {
     background: var(--vie-bg-light);
     border-radius: var(--vie-radius);
-    padding: var(--vie-space-5);
-}
-
-.vie-booking-summary h4 {
-    margin: 0 0 var(--vie-space-4);
-    font-size: var(--vie-text-base);
+    padding: var(--vie-space-4);
+    margin-bottom: var(--vie-space-4);
 }
 
 .vie-summary-item {
@@ -490,314 +473,221 @@ body.vie-modal-open {
     border-bottom: none;
 }
 
-/* Children Ages in Booking */
-.vie-children-ages-booking .vie-ages-inputs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--vie-space-3);
-}
-
-.vie-children-ages-booking .vie-age-item {
-    display: flex;
-    align-items: center;
-    gap: var(--vie-space-2);
-    background: var(--vie-white);
-    padding: var(--vie-space-2) var(--vie-space-3);
-    border-radius: var(--vie-radius);
-    border: 1px solid var(--vie-border);
-}
-
-.vie-children-ages-booking .vie-age-item span {
-    font-size: var(--vie-text-xs);
-    color: var(--vie-text-muted);
-}
-
-.vie-children-ages-booking .vie-age-item select {
-    width: 70px;
-    padding: var(--vie-space-2);
-    border: 1px solid var(--vie-border);
-    border-radius: var(--vie-radius-sm);
-}
-
 /* ==========================================================================
-   5. BOOKING FOOTER
-   ========================================================================== */
-
-.vie-booking-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--vie-space-3);
-    padding: var(--vie-space-5) var(--vie-space-6);
-    border-top: 1px solid var(--vie-border);
-    background: var(--vie-bg-light);
-    border-radius: 0 0 var(--vie-radius-md) var(--vie-radius-md);
-}
-
-/* ==========================================================================
-   6. SUCCESS MODAL
-   ========================================================================== */
-
-.vie-success-content {
-    padding: var(--vie-space-10);
-    text-align: center;
-}
-
-.vie-success-icon {
-    margin-bottom: var(--vie-space-5);
-}
-
-.vie-success-icon .dashicons {
-    font-size: 64px;
-    width: 64px;
-    height: 64px;
-    color: var(--vie-success);
-}
-
-.vie-success-content h2 {
-    margin: 0 0 var(--vie-space-2);
-    color: var(--vie-success);
-}
-
-.vie-booking-code {
-    font-size: var(--vie-text-xl);
-    font-weight: var(--vie-font-bold);
-    color: var(--vie-text);
-    margin: 0 0 var(--vie-space-3);
-}
-
-.vie-success-msg {
-    color: var(--vie-text-muted);
-    margin-bottom: var(--vie-space-6);
-}
-
-.vie-success-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--vie-space-3);
-}
-
-/* ==========================================================================
-   7. TRANSPORT SECTION
+   9. TRANSPORT SECTION
    ========================================================================== */
 
 .vie-transport-section {
-    margin-top: var(--vie-space-6);
-    padding: var(--vie-space-6);
+    margin-top: var(--vie-space-4);
+    padding: var(--vie-space-4);
     background: var(--vie-bg-light);
-    border-radius: var(--vie-radius-md);
+    border-radius: var(--vie-radius);
     border: 1px solid var(--vie-border);
-    transition: all var(--vie-transition-slow);
-}
-
-.vie-transport-section:hover {
-    border-color: var(--vie-border-dark);
-    box-shadow: var(--vie-shadow-sm);
-}
-
-.vie-transport-header {
-    margin-bottom: 0;
-}
-
-.vie-transport-title {
-    display: flex;
-    align-items: center;
-    gap: var(--vie-space-3);
-}
-
-.vie-transport-title .dashicons {
-    color: var(--vie-primary);
-    font-size: 22px;
-    width: 22px;
-    height: 22px;
-}
-
-.vie-transport-title strong {
-    font-size: var(--vie-text-base);
-    color: var(--vie-text);
-    font-weight: var(--vie-font-semibold);
-}
-
-.vie-transport-options {
-    margin-top: var(--vie-space-5);
-    padding-top: var(--vie-space-5);
-    border-top: 1px dashed var(--vie-border);
-}
-
-.vie-transport-options .vie-form-row {
-    margin-bottom: var(--vie-space-4);
-}
-
-.vie-transport-options select {
-    background: var(--vie-white);
-    height: 42px;
 }
 
 .vie-transport-note {
-    margin-top: var(--vie-space-4);
-    padding: var(--vie-space-3) var(--vie-space-4);
+    margin-top: var(--vie-space-3);
+    padding: var(--vie-space-2) var(--vie-space-3);
     background: var(--vie-white);
     border-radius: var(--vie-radius);
-    border: 1px solid var(--vie-border);
     border-left: 3px solid var(--vie-primary);
-}
-
-.vie-transport-note p {
-    margin: 0;
     font-size: var(--vie-text-xs);
     color: var(--vie-text-muted);
-    display: flex;
-    align-items: flex-start;
-    gap: var(--vie-space-2);
-    line-height: var(--vie-leading-normal);
 }
 
-.vie-transport-note .dashicons {
-    color: var(--vie-primary);
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    margin-top: 1px;
-}
-
-/* Transport Error */
 .vie-transport-error {
-    margin-top: var(--vie-space-4);
-    padding: var(--vie-space-3) var(--vie-space-4);
+    margin-top: var(--vie-space-3);
+    padding: var(--vie-space-2) var(--vie-space-3);
     background: var(--vie-danger-bg);
     border-radius: var(--vie-radius);
-    border: 1px solid #fecaca;
     border-left: 3px solid var(--vie-danger);
     color: var(--vie-danger);
     font-size: var(--vie-text-xs);
-    display: flex;
-    align-items: center;
-    gap: var(--vie-space-2);
     font-weight: var(--vie-font-medium);
 }
 
-.vie-transport-error .dashicons {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-}
-
 /* ==========================================================================
-   8. INVOICE SECTION
+   10. INVOICE SECTION
    ========================================================================== */
 
-.vie-invoice-section {
-    margin-top: var(--vie-space-6);
-    padding: var(--vie-space-5);
-    background: var(--vie-white);
-    border: 1px solid var(--vie-border);
-    border-radius: var(--vie-radius-md);
-}
-
-.vie-invoice-section .vie-checkbox {
+.vie-checkbox {
     display: flex;
     align-items: center;
-    gap: var(--vie-space-3);
+    gap: var(--vie-space-2);
     cursor: pointer;
-    margin-bottom: 0;
 }
 
-.vie-invoice-section input[type="checkbox"] {
+.vie-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
     accent-color: var(--vie-primary);
     cursor: pointer;
 }
 
-.vie-invoice-section .vie-checkbox-label {
-    font-weight: var(--vie-font-semibold);
-    color: var(--vie-text);
-    font-size: var(--vie-text-sm);
-}
-
 .vie-invoice-info {
-    margin-top: var(--vie-space-4);
-    padding-top: var(--vie-space-4);
+    margin-top: var(--vie-space-3);
+    padding-top: var(--vie-space-3);
     border-top: 1px dashed var(--vie-border);
-    animation: vieSlideDown 0.3s ease;
-}
-
-@keyframes vieSlideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Bed Type Field */
-.vie-bed-type {
-    margin-top: var(--vie-space-4);
-    padding: var(--vie-space-3) var(--vie-space-4);
-    background: var(--vie-bg-light);
-    border-radius: var(--vie-radius);
-    border: 1px solid var(--vie-border);
-}
-
-.vie-bed-type label {
-    font-weight: var(--vie-font-semibold);
-    margin-bottom: var(--vie-space-2);
-    display: block;
-}
-
-.vie-bed-type select {
-    width: 100%;
-    padding: var(--vie-space-3) var(--vie-space-4);
-    border: 1px solid var(--vie-border);
-    border-radius: var(--vie-radius);
-    font-size: var(--vie-text-sm);
-    background: var(--vie-white);
 }
 
 /* ==========================================================================
-   9. RESPONSIVE
+   11. FOOTER
+   ========================================================================== */
+
+.vie-booking-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--vie-space-3);
+    padding: var(--vie-space-5);
+    border-top: 1px solid var(--vie-border);
+    background: var(--vie-bg-light);
+}
+
+/* ==========================================================================
+   12. BUTTONS
+   ========================================================================== */
+
+.vie-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--vie-space-2);
+    padding: var(--vie-space-3) var(--vie-space-5);
+    border: none;
+    border-radius: var(--vie-radius);
+    font-size: var(--vie-text-sm);
+    font-weight: var(--vie-font-semibold);
+    cursor: pointer;
+    text-align: center;
+}
+
+.vie-btn-primary {
+    background: var(--vie-primary);
+    color: var(--vie-white);
+}
+
+.vie-btn-primary:hover:not(:disabled) {
+    background: var(--vie-primary-light);
+}
+
+.vie-btn-secondary {
+    background: var(--vie-white);
+    color: var(--vie-text);
+    border: 1px solid var(--vie-border);
+}
+
+.vie-btn-secondary:hover {
+    background: var(--vie-bg-light);
+}
+
+.vie-btn-outline {
+    background: var(--vie-white);
+    color: var(--vie-primary);
+    border: 1px solid var(--vie-primary);
+}
+
+.vie-btn-outline:hover {
+    background: var(--vie-primary);
+    color: var(--vie-white);
+}
+
+.vie-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   13. HELPERS
+   ========================================================================== */
+
+.vie-help-text {
+    margin-top: var(--vie-space-2);
+    font-size: var(--vie-text-xs);
+    color: var(--vie-text-muted);
+}
+
+.vie-children-ages-booking .vie-ages-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--vie-space-3);
+    margin-bottom: var(--vie-space-2);
+}
+
+.vie-children-ages-booking .vie-age-item {
+    display: flex;
+    align-items: center;
+    gap: var(--vie-space-2);
+}
+
+.vie-children-ages-booking .vie-age-item span {
+    font-size: var(--vie-text-sm);
+    color: var(--vie-text);
+    font-weight: var(--vie-font-medium);
+}
+
+.vie-children-ages-booking .vie-age-item select {
+    width: auto;
+    min-width: 80px;
+    padding: var(--vie-space-2) var(--vie-space-3);
+    border: 1px solid var(--vie-border);
+    border-radius: var(--vie-radius-sm);
+    font-size: var(--vie-text-sm);
+    font-family: inherit;
+    background: var(--vie-white);
+    cursor: pointer;
+    height: 36px;
+    /* Fix height alignment */
+}
+
+.vie-children-ages-booking .vie-age-item select:focus {
+    outline: none;
+    border-color: var(--vie-primary);
+}
+
+/* ==========================================================================
+   14. RESPONSIVE
    ========================================================================== */
 
 @media (max-width: 767px) {
-    .vie-modal-container {
-        margin: var(--vie-space-3);
-        max-height: calc(100vh - 20px);
-    }
-
-    .vie-booking-step-content {
-        padding: 0 var(--vie-space-4) var(--vie-space-4);
-    }
-
-    .vie-booking-footer {
-        padding: var(--vie-space-4);
-    }
-
-    /* Price summary mobile */
-    .vie-price-summary {
-        padding: var(--vie-space-4);
-    }
-
-    .vie-summary-header {
-        flex-direction: column;
-        gap: var(--vie-space-2);
-        align-items: flex-start;
-    }
-
-    .vie-breakdown-row {
-        font-size: var(--vie-text-xs);
-        flex-wrap: wrap;
-    }
-
-    .vie-weekend-row {
-        margin: var(--vie-space-1) calc(var(--vie-space-1) * -1);
+    .vie-modal {
         padding: var(--vie-space-2);
     }
 
-    .vie-summary-row.vie-summary-total .vie-summary-value {
-        font-size: var(--vie-text-xl);
+    .vie-modal-container {
+        max-height: 95vh;
+    }
+
+    .vie-booking-header {
+        padding: var(--vie-space-4);
+    }
+
+    .vie-booking-steps {
+        gap: var(--vie-space-4);
+        padding: var(--vie-space-3);
+    }
+
+    .vie-booking-step-content {
+        padding: var(--vie-space-4);
+    }
+
+    .vie-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .vie-radio-group {
+        grid-template-columns: 1fr;
+    }
+
+    .vie-booking-footer {
+        flex-direction: column-reverse;
+        padding: var(--vie-space-4);
+    }
+
+    .vie-btn {
+        width: 100%;
+    }
+
+    .vie-coupon-input-group {
+        flex-direction: column;
     }
 }

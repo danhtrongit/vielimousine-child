@@ -68,8 +68,9 @@
 }
 
 .vie-btn-outline:hover:not(:disabled) {
+    background-color: var(--vie-primary);
     border-color: var(--vie-primary);
-    color: var(--vie-primary);
+    color: var(--vie-white);
 }
 
 /* Size Variants */

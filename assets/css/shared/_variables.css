@@ -1,0 +1,390 @@
+/**
+ * ============================================================================
+ * FILE: shared/_variables.css
+ * ============================================================================
+ *
+ * Single Source of Truth cho TẤT CẢ biến CSS trong theme.
+ * File này được import bởi cả frontend và admin CSS.
+ *
+ * THAY ĐỔI MÀU CHỦ ĐẠO: Chỉ cần thay đổi --vie-primary ở đây,
+ * toàn bộ theme (frontend + admin) sẽ tự động cập nhật.
+ *
+ * MỤC LỤC:
+ * 1. Brand Colors (Màu xanh đậm chủ đạo)
+ * 2. Semantic Colors
+ * 3. Neutral Colors
+ * 4. Typography
+ * 5. Spacing
+ * 6. Borders & Shadows
+ * 7. Transitions
+ * 8. Z-index Scale
+ * 9. Breakpoints (comment only)
+ *
+ * ----------------------------------------------------------------------------
+ * @package     VielimousineChild
+ * @version     2.1.0
+ * @since       2.1.0
+ * ============================================================================
+ */
+
+:root {
+    /* =====================================================================
+       1. BRAND COLORS - XANH ĐẬM CHỦ ĐẠO
+       =====================================================================
+
+       Màu chủ đạo của VIE Limousine: Xanh đậm sang trọng
+       Thể hiện sự chuyên nghiệp, tin cậy và đẳng cấp
+    */
+
+    /* Primary Brand Color - Xanh đậm chủ đạo */
+    --vie-primary: #0A5C36;           /* Xanh đậm chủ đạo - Main brand color */
+    --vie-primary-light: #0E7C4A;     /* Hover states, lighter variant */
+    --vie-primary-dark: #084428;      /* Active states, pressed state */
+    --vie-primary-50: #E8F5F0;        /* Backgrounds, very light */
+    --vie-primary-100: #D1EBE1;       /* Subtle highlights */
+    --vie-primary-200: #A3D7C3;       /* Borders, dividers */
+
+    /* Secondary Brand Color - Xám sang trọng */
+    --vie-secondary: #64748b;
+    --vie-secondary-light: #94a3b8;
+    --vie-secondary-dark: #475569;
+
+    /* =====================================================================
+       2. SEMANTIC COLORS - Màu theo ý nghĩa
+       ===================================================================== */
+
+    /* Success - Xanh lá */
+    --vie-success: #10b981;           /* Success messages, confirmed status */
+    --vie-success-light: #34d399;     /* Hover state */
+    --vie-success-dark: #059669;      /* Active state */
+    --vie-success-bg: #ecfdf5;        /* Background for success alerts */
+    --vie-success-text: #065f46;      /* Text on success backgrounds */
+
+    /* Danger - Đỏ */
+    --vie-danger: #ef4444;            /* Errors, destructive actions */
+    --vie-danger-light: #f87171;      /* Hover state */
+    --vie-danger-dark: #dc2626;       /* Active state */
+    --vie-danger-bg: #fef2f2;         /* Background for error alerts */
+    --vie-danger-text: #991b1b;       /* Text on danger backgrounds */
+
+    /* Warning - Vàng cam */
+    --vie-warning: #f59e0b;           /* Warnings, pending status */
+    --vie-warning-light: #fbbf24;     /* Hover state */
+    --vie-warning-dark: #d97706;      /* Active state */
+    --vie-warning-bg: #fffbeb;        /* Background for warning alerts */
+    --vie-warning-text: #92400e;      /* Text on warning backgrounds */
+
+    /* Info - Xanh dương */
+    --vie-info: #0ea5e9;              /* Informational messages */
+    --vie-info-light: #38bdf8;        /* Hover state */
+    --vie-info-dark: #0284c7;         /* Active state */
+    --vie-info-bg: #f0f9ff;           /* Background for info alerts */
+    --vie-info-text: #075985;         /* Text on info backgrounds */
+
+    /* Purple - Tím (cho special badges) */
+    --vie-purple: #9333ea;
+    --vie-purple-light: #a855f7;
+    --vie-purple-bg: #faf5ff;
+    --vie-purple-text: #6b21a8;
+
+    /* =====================================================================
+       3. NEUTRAL COLORS - Thang xám
+       ===================================================================== */
+
+    --vie-white: #ffffff;
+    --vie-black: #000000;
+
+    /* Gray Scale */
+    --vie-gray-50: #f8fafc;
+    --vie-gray-100: #f1f5f9;
+    --vie-gray-200: #e2e8f0;
+    --vie-gray-300: #cbd5e1;
+    --vie-gray-400: #94a3b8;
+    --vie-gray-500: #64748b;
+    --vie-gray-600: #475569;
+    --vie-gray-700: #334155;
+    --vie-gray-800: #1e293b;
+    --vie-gray-900: #0f172a;
+
+    /* Semantic Mappings - Ánh xạ theo mục đích sử dụng */
+    --vie-text: var(--vie-gray-800);           /* Primary text color */
+    --vie-text-muted: var(--vie-gray-500);     /* Secondary text */
+    --vie-text-light: var(--vie-gray-400);     /* Disabled, placeholder */
+
+    --vie-bg: var(--vie-white);                /* Main background */
+    --vie-bg-light: var(--vie-gray-50);        /* Light background */
+    --vie-bg-dark: var(--vie-gray-100);        /* Darker background */
+
+    --vie-border: var(--vie-gray-200);         /* Default border */
+    --vie-border-light: var(--vie-gray-100);   /* Light border */
+    --vie-border-dark: var(--vie-gray-300);    /* Dark border */
+
+    /* WordPress Admin Colors (for admin compatibility) */
+    --wp-text-primary: #1d2327;
+    --wp-text-secondary: #646970;
+    --wp-border: #c3c4c7;
+    --wp-bg-light: #f6f7f7;
+    --wp-bg-hover: #f0f6fc;
+
+    /* =====================================================================
+       4. TYPOGRAPHY
+       ===================================================================== */
+
+    /* Font Family */
+    --vie-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --vie-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+
+    /* Font Sizes */
+    --vie-text-xs: 0.75rem;      /* 12px */
+    --vie-text-sm: 0.875rem;     /* 14px */
+    --vie-text-base: 1rem;       /* 16px */
+    --vie-text-lg: 1.125rem;     /* 18px */
+    --vie-text-xl: 1.25rem;      /* 20px */
+    --vie-text-2xl: 1.5rem;      /* 24px */
+    --vie-text-3xl: 1.875rem;    /* 30px */
+    --vie-text-4xl: 2.25rem;     /* 36px */
+    --vie-text-5xl: 3rem;        /* 48px */
+
+    /* Font Weights */
+    --vie-font-light: 300;
+    --vie-font-normal: 400;
+    --vie-font-medium: 500;
+    --vie-font-semibold: 600;
+    --vie-font-bold: 700;
+    --vie-font-extrabold: 800;
+
+    /* Line Heights */
+    --vie-leading-none: 1;
+    --vie-leading-tight: 1.25;
+    --vie-leading-snug: 1.375;
+    --vie-leading-normal: 1.5;
+    --vie-leading-relaxed: 1.625;
+    --vie-leading-loose: 2;
+
+    /* =====================================================================
+       5. SPACING
+       ===================================================================== */
+
+    --vie-space-0: 0;
+    --vie-space-px: 1px;
+    --vie-space-0-5: 0.125rem;   /* 2px */
+    --vie-space-1: 0.25rem;      /* 4px */
+    --vie-space-1-5: 0.375rem;   /* 6px */
+    --vie-space-2: 0.5rem;       /* 8px */
+    --vie-space-2-5: 0.625rem;   /* 10px */
+    --vie-space-3: 0.75rem;      /* 12px */
+    --vie-space-3-5: 0.875rem;   /* 14px */
+    --vie-space-4: 1rem;         /* 16px */
+    --vie-space-5: 1.25rem;      /* 20px */
+    --vie-space-6: 1.5rem;       /* 24px */
+    --vie-space-7: 1.75rem;      /* 28px */
+    --vie-space-8: 2rem;         /* 32px */
+    --vie-space-9: 2.25rem;      /* 36px */
+    --vie-space-10: 2.5rem;      /* 40px */
+    --vie-space-11: 2.75rem;     /* 44px */
+    --vie-space-12: 3rem;        /* 48px */
+    --vie-space-14: 3.5rem;      /* 56px */
+    --vie-space-16: 4rem;        /* 64px */
+    --vie-space-20: 5rem;        /* 80px */
+    --vie-space-24: 6rem;        /* 96px */
+
+    /* Aliases for common uses */
+    --spacing-xs: var(--vie-space-1);    /* 4px */
+    --spacing-sm: var(--vie-space-2);    /* 8px */
+    --spacing-md: var(--vie-space-3);    /* 12px */
+    --spacing-lg: var(--vie-space-4);    /* 16px */
+    --spacing-xl: var(--vie-space-5);    /* 20px */
+
+    /* =====================================================================
+       6. BORDERS & SHADOWS
+       ===================================================================== */
+
+    /* Border Radius */
+    --vie-radius-none: 0;
+    --vie-radius-sm: 4px;
+    --vie-radius: 8px;
+    --vie-radius-md: 12px;
+    --vie-radius-lg: 16px;
+    --vie-radius-xl: 24px;
+    --vie-radius-2xl: 32px;
+    --vie-radius-full: 9999px;
+
+    /* Aliases for backward compatibility */
+    --modal-radius: var(--vie-radius-sm);
+    --badge-radius: 3px;
+    --button-radius: var(--vie-radius-sm);
+
+    /* Border Width */
+    --vie-border-width: 1px;
+    --vie-border-width-2: 2px;
+    --vie-border-width-4: 4px;
+
+    /* Box Shadows */
+    --vie-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --vie-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --vie-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --vie-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --vie-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --vie-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --vie-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+    /* Aliases for backward compatibility */
+    --modal-shadow: var(--vie-shadow-xl);
+    --card-shadow: var(--vie-shadow-sm);
+
+    /* Focus Ring */
+    --vie-ring: 0 0 0 3px rgba(10, 92, 54, 0.2);        /* Primary color ring */
+    --vie-ring-danger: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    --vie-ring-success: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    --vie-ring-warning: 0 0 0 3px rgba(245, 158, 11, 0.2);
+
+    /* =====================================================================
+       7. TRANSITIONS
+       ===================================================================== */
+
+    --vie-transition-fast: 150ms ease;
+    --vie-transition: 200ms ease;
+    --vie-transition-slow: 300ms ease;
+    --vie-transition-slower: 500ms ease;
+
+    /* Transition Properties */
+    --vie-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --vie-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --vie-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* =====================================================================
+       8. Z-INDEX SCALE
+       ===================================================================== */
+
+    --vie-z-below: -1;
+    --vie-z-base: 0;
+    --vie-z-dropdown: 100;
+    --vie-z-sticky: 200;
+    --vie-z-fixed: 300;
+    --vie-z-modal-backdrop: 400;
+    --vie-z-modal: 500;
+    --vie-z-popover: 600;
+    --vie-z-tooltip: 700;
+    --vie-z-toast: 800;
+    --vie-z-max: 9999;
+
+    /* =====================================================================
+       9. BREAKPOINTS (Reference - dùng trong @media queries)
+       =====================================================================
+
+       Mobile First Approach:
+
+       Mobile:         < 640px      (default, no media query)
+       Tablet:         >= 640px     @media (min-width: 640px)
+       Desktop:        >= 1024px    @media (min-width: 1024px)
+       Large Desktop:  >= 1280px    @media (min-width: 1280px)
+       Extra Large:    >= 1536px    @media (min-width: 1536px)
+
+       ===================================================================== */
+}
+
+/* =====================================================================
+   ALIASES CHO BACKWARD COMPATIBILITY
+   =====================================================================
+
+   Các alias này giúp code cũ vẫn hoạt động khi refactor
+*/
+
+:root {
+    /* Alias cho admin theme (màu xanh lá cũ) */
+    --hotel-primary: var(--vie-primary);
+    --hotel-primary-hover: var(--vie-primary-light);
+    --hotel-secondary: var(--vie-success);
+
+    /* Status colors aliases */
+    --status-success: var(--vie-success-bg);
+    --text-success: var(--vie-success-text);
+
+    --status-warning: var(--vie-warning-bg);
+    --text-warning: var(--vie-warning-text);
+
+    --status-info: var(--vie-info-bg);
+    --text-info: var(--vie-info-text);
+
+    --status-danger: var(--vie-danger-bg);
+    --text-danger: var(--vie-danger-text);
+
+    --status-default: var(--vie-gray-100);
+    --text-default: var(--vie-gray-600);
+
+    --status-purple: var(--vie-purple-bg);
+    --text-purple: var(--vie-purple-text);
+
+    /* =====================================================================
+       FRONTEND-SPECIFIC VARIABLES
+       ===================================================================== */
+
+    /* Datepicker specific colors */
+    --vie-datepicker-highlight: var(--vie-primary-100);
+    --vie-datepicker-selected: var(--vie-primary);
+    --vie-datepicker-hover: var(--vie-primary-50);
+
+    /* Booking flow specific */
+    --vie-booking-step-active: var(--vie-primary);
+    --vie-booking-step-complete: var(--vie-success);
+    --vie-booking-step-pending: var(--vie-gray-300);
+
+    /* Room card specific */
+    --vie-room-card-bg: var(--vie-white);
+    --vie-room-card-border: var(--vie-border);
+    --vie-room-card-shadow: var(--vie-shadow-md);
+    --vie-room-card-hover-shadow: var(--vie-shadow-lg);
+
+    /* Payment specific */
+    --vie-payment-success-bg: var(--vie-success-bg);
+    --vie-payment-pending-bg: var(--vie-warning-bg);
+    --vie-payment-failed-bg: var(--vie-danger-bg);
+
+    /* =====================================================================
+       ADMIN-SPECIFIC VARIABLES
+       ===================================================================== */
+
+    /* Admin table specific */
+    --vie-table-header-bg: var(--vie-gray-50);
+    --vie-table-border: var(--vie-border);
+    --vie-table-hover-bg: var(--vie-primary-50);
+    --vie-table-stripe-bg: var(--vie-gray-50);
+
+    /* Admin badge specific */
+    --vie-badge-radius: var(--badge-radius);
+
+    /* Admin modal specific */
+    --vie-modal-overlay-bg: rgba(0, 0, 0, 0.5);
+    --vie-modal-bg: var(--vie-white);
+    --vie-modal-header-bg: var(--vie-gray-50);
+
+    /* Admin button specific */
+    --vie-btn-primary-bg: var(--vie-primary);
+    --vie-btn-primary-hover: var(--vie-primary-light);
+    --vie-btn-primary-active: var(--vie-primary-dark);
+    --vie-btn-primary-text: var(--vie-white);
+
+    --vie-btn-secondary-bg: var(--vie-gray-100);
+    --vie-btn-secondary-hover: var(--vie-gray-200);
+    --vie-btn-secondary-text: var(--vie-gray-700);
+
+    --vie-btn-danger-bg: var(--vie-danger);
+    --vie-btn-danger-hover: var(--vie-danger-light);
+    --vie-btn-danger-text: var(--vie-white);
+
+    /* Admin form specific */
+    --vie-input-bg: var(--vie-white);
+    --vie-input-border: var(--vie-border);
+    --vie-input-border-focus: var(--vie-primary);
+    --vie-input-text: var(--vie-text);
+    --vie-input-placeholder: var(--vie-text-light);
+
+    /* Admin calendar/matrix specific */
+    --vie-calendar-header-bg: var(--vie-primary);
+    --vie-calendar-header-text: var(--vie-white);
+    --vie-calendar-cell-bg: var(--vie-white);
+    --vie-calendar-cell-border: var(--vie-border-light);
+    --vie-calendar-weekend-bg: var(--vie-gray-50);
+    --vie-calendar-sold-out-bg: var(--vie-danger-bg);
+    --vie-calendar-stop-sell-bg: var(--vie-gray-200);
+}

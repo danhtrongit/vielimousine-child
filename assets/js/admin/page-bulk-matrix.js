@@ -76,16 +76,21 @@
             // Expand/Collapse all
             $('#btn-expand-all').on('click', function() {
                 $('.row-hotel-header').removeClass('collapsed');
+                $('.row-room-data').show();
             });
             
             $('#btn-collapse-all').on('click', function() {
                 $('.row-hotel-header').addClass('collapsed');
+                $('.row-room-data').hide();
             });
             
             // Hotel group toggle
             $(document).on('click', '.row-hotel-header td.col-first', function() {
                 var $row = $(this).closest('tr');
+                var hotelId = $row.data('hotel-id');
                 $row.toggleClass('collapsed');
+                // Toggle room rows visibility
+                $('.row-room-data[data-hotel-id="' + hotelId + '"]').toggle(!$row.hasClass('collapsed'));
             });
             
             // Cell input change tracking
@@ -224,7 +229,23 @@
                     if (response.success) {
                         self.data = response.data;
                         self.changes = {};
-                        self.buildDaysArray(year, month);
+                        
+                        // Use dates from response if available, otherwise build from month/year
+                        if (response.data.dates && response.data.dates.length > 0) {
+                            self.daysInMonth = response.data.dates.map(function(d) {
+                                return {
+                                    day: parseInt(d.day),
+                                    dateStr: d.date,
+                                    dayName: d.dow_label,
+                                    dow: d.dow,
+                                    isWeekend: d.dow === 0 || d.dow === 6 || d.dow === 5,
+                                    isToday: d.is_today
+                                };
+                            });
+                        } else {
+                            self.buildDaysArray(year, month);
+                        }
+                        
                         self.renderMatrix();
                         self.updateStats();
                         self.updateChangesCount();
@@ -334,7 +355,7 @@
             var headerHtml = '<tr class="row-hotel-header" data-hotel-id="' + hotel.id + '">';
             headerHtml += '<td class="col-first" colspan="' + (this.daysInMonth.length + 1) + '">';
             headerHtml += '<div class="hotel-header-content">';
-            headerHtml += '<span class="dashicons dashicons-arrow-down toggle-icon"></span>';
+            headerHtml += '<span class="dashicons dashicons-arrow-down-alt2 toggle-icon"></span>';
             headerHtml += '<span class="hotel-name">' + this.escapeHtml(hotel.name) + '</span>';
             headerHtml += '<span class="room-count">' + hotel.rooms.length + '</span>';
             headerHtml += '</div>';
@@ -362,10 +383,7 @@
             html += '<div class="room-details">';
             html += '<div class="room-name" title="' + self.escapeHtml(room.name) + '">' + self.escapeHtml(room.name) + '</div>';
             html += '<div class="room-meta">';
-            html += '<span>Phòng: ' + room.total_rooms + '</span>';
-            if (room.base_price > 0) {
-                html += '<span>Giá: ' + self.formatK(room.base_price) + '</span>';
-            }
+            html += '<span>Phòng: ' + (room.total_rooms || 0) + '</span>';
             html += '</div>'; // room-meta
             html += '</div>'; // room-details
             html += '<button type="button" class="row-actions-btn" data-room-id="' + room.id + '">';
@@ -374,13 +392,8 @@
             html += '</div>'; // room-info-cell
             html += '</td>';
             
-            // Data Cells
-            var pricingMap = {};
-            if (room.pricing && room.pricing.length) {
-                room.pricing.forEach(function(p) {
-                    pricingMap[p.date] = p;
-                });
-            }
+            // Pricing data - support both object and array format
+            var pricingMap = room.pricing || {};
             
             this.daysInMonth.forEach(function(day) {
                 var pricing = pricingMap[day.dateStr] || {};
@@ -391,7 +404,7 @@
                 
                 var comboVal = pricing.price_combo || '';
                 var roomVal = pricing.price_room || '';
-                var stockVal = pricing.stock !== undefined ? pricing.stock : room.total_rooms;
+                var stockVal = pricing.stock !== undefined ? pricing.stock : (room.total_rooms || '');
                 
                 html += '<td class="' + classes.join(' ') + '" ';
                 html += 'data-room-id="' + room.id + '" ';
@@ -414,7 +427,7 @@
                 
                 // Stock input
                 html += '<div class="cell-input stock">';
-                html += '<label>S</label>';
+                html += '<label>Q</label>';
                 html += '<input type="number" name="stock" value="' + stockVal + '" min="0" placeholder="0">';
                 html += '</div>';
                 

@@ -95,12 +95,23 @@
     gap: var(--vie-space-2);
 }
 
+.vie-age-input span {
+    font-size: var(--vie-text-sm);
+    color: var(--vie-text);
+    font-weight: var(--vie-font-medium);
+}
+
 .vie-age-input select {
     width: 80px;
     padding: var(--vie-space-2) var(--vie-space-3);
     border: 1px solid var(--vie-border);
     border-radius: var(--vie-radius-sm);
     font-size: var(--vie-text-sm);
+}
+
+.vie-age-input select:focus {
+    outline: none;
+    border-color: var(--vie-primary);
 }
 
 /* ==========================================================================
@@ -211,6 +222,9 @@
     font-size: var(--vie-text-xl);
     font-weight: var(--vie-font-bold);
     color: var(--vie-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .vie-room-meta {
@@ -510,6 +524,7 @@
 }
 
 @media (max-width: 767px) {
+
     .vie-rooms-grid.columns-2,
     .vie-rooms-grid.columns-3 {
         grid-template-columns: 1fr;

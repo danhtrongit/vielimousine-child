@@ -52,11 +52,6 @@ if (file_exists(VIE_THEME_PATH . '/inc/config/constants.php')) {
     require_once VIE_THEME_PATH . '/inc/config/constants.php';
 }
 
-// Credentials (API keys, SMTP, etc.) - file này KHÔNG được commit lên git
-if (file_exists(VIE_THEME_PATH . '/inc/config/credentials.php')) {
-    require_once VIE_THEME_PATH . '/inc/config/credentials.php';
-}
-
 /**
  * ============================================================================
  * PHẦN 3: LOAD HELPER FUNCTIONS
@@ -89,36 +84,139 @@ if (file_exists(VIE_THEME_PATH . '/inc/helpers/templates.php')) {
  * PHẦN 4: LOAD CORE CLASSES
  * ============================================================================
  * Các class xử lý business logic chính
+ * Thứ tự load rất quan trọng - classes phụ thuộc phải load sau
  */
 
-// Quản lý phòng
-if (file_exists(VIE_THEME_PATH . '/inc/classes/class-room-manager.php')) {
-    require_once VIE_THEME_PATH . '/inc/classes/class-room-manager.php';
+// Google Auth (v2.1: Di chuyển vào Services/Integration/)
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Integration/GoogleAuth.php')) {
+    require_once VIE_THEME_PATH . '/inc/Services/Integration/GoogleAuth.php';
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-google-auth.php')) {
+    // Fallback to old location (backward compatibility)
+    require_once VIE_THEME_PATH . '/inc/classes/class-google-auth.php';
 }
 
-// Quản lý đặt phòng
-if (file_exists(VIE_THEME_PATH . '/inc/classes/class-booking-manager.php')) {
-    require_once VIE_THEME_PATH . '/inc/classes/class-booking-manager.php';
-}
-
-// Engine tính giá
-if (file_exists(VIE_THEME_PATH . '/inc/classes/class-pricing-engine.php')) {
-    require_once VIE_THEME_PATH . '/inc/classes/class-pricing-engine.php';
-}
-
-// Gửi email
-if (file_exists(VIE_THEME_PATH . '/inc/classes/class-email-manager.php')) {
-    require_once VIE_THEME_PATH . '/inc/classes/class-email-manager.php';
-}
-
-// Google Sheets API
-if (file_exists(VIE_THEME_PATH . '/inc/classes/class-google-sheets-api.php')) {
+// Google Sheets API (v2.1: Di chuyển vào Services/Integration/)
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Integration/GoogleSheetsAPI.php')) {
+    require_once VIE_THEME_PATH . '/inc/Services/Integration/GoogleSheetsAPI.php';
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-google-sheets-api.php')) {
+    // Fallback to old location (backward compatibility)
     require_once VIE_THEME_PATH . '/inc/classes/class-google-sheets-api.php';
 }
 
-// SePay Payment Gateway
-if (file_exists(VIE_THEME_PATH . '/inc/classes/class-sepay-gateway.php')) {
+// Cache Manager (v2.1: Di chuyển vào Support/Cache/)
+if (file_exists(VIE_THEME_PATH . '/inc/Support/Cache/CacheManager.php')) {
+    require_once VIE_THEME_PATH . '/inc/Support/Cache/CacheManager.php';
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-cache-manager.php')) {
+    // Fallback to old location (backward compatibility)
+    require_once VIE_THEME_PATH . '/inc/classes/class-cache-manager.php';
+}
+
+/**
+ * ============================================================================
+ * LEGACY MODULE: HOTEL ROOMS (REMOVED IN v2.1)
+ * ============================================================================
+ *
+ * Module cũ đã được tách thành các class riêng trong v2.0 và XÓA HOÀN TOÀN trong v2.1:
+ * - class-booking-manager.php (Quản lý đặt phòng)
+ * - class-pricing-engine.php (Engine tính giá)
+ * - class-email-manager.php (Gửi email)
+ * - class-sepay-gateway.php (Payment gateway)
+ *
+ * File class-hotel-rooms.php đã bị XÓA vào v2.1.0 (2025-12-01)
+ * Tất cả chức năng đã được refactor vào các module riêng biệt.
+ */
+
+// Pricing Service (v2.1: Di chuyển vào Services/Pricing/)
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Pricing/PricingService.php')) {
+    require_once VIE_THEME_PATH . '/inc/Services/Pricing/PricingService.php';
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-pricing-engine.php')) {
+    // Fallback to old location (backward compatibility)
+    require_once VIE_THEME_PATH . '/inc/classes/class-pricing-engine.php';
+}
+
+// Booking Service (v2.1: Di chuyển vào Services/Booking/)
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Booking/BookingService.php')) {
+    require_once VIE_THEME_PATH . '/inc/Services/Booking/BookingService.php';
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-booking-manager.php')) {
+    // Fallback to old location (backward compatibility)
+    require_once VIE_THEME_PATH . '/inc/classes/class-booking-manager.php';
+}
+
+// Custom Fields for Hotel Location (Transport)
+if (file_exists(VIE_THEME_PATH . '/inc/admin/Taxonomy/TransportFields.php')) {
+    require_once VIE_THEME_PATH . '/inc/admin/Taxonomy/TransportFields.php';
+}
+
+// Coupon Service (v2.1: Di chuyển vào Services/Coupon/)
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Coupon/CouponService.php')) {
+    require_once VIE_THEME_PATH . '/inc/Services/Coupon/CouponService.php';
+    // Initialize service to register AJAX hooks
+    Vie_Coupon_Service::get_instance();
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-coupon-manager.php')) {
+    // Fallback to old location (backward compatibility)
+    require_once VIE_THEME_PATH . '/inc/classes/class-coupon-manager.php';
+}
+
+// Email Service (v2.1: Di chuyển vào Services/Email/)
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Email/EmailService.php')) {
+    require_once VIE_THEME_PATH . '/inc/Services/Email/EmailService.php';
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-email-manager.php')) {
+    // Fallback to old location (backward compatibility)
+    require_once VIE_THEME_PATH . '/inc/classes/class-email-manager.php';
+}
+
+// SePay Payment Gateway (v2.1: Split thành 9 services)
+// Thứ tự load theo dependency graph
+if (file_exists(VIE_THEME_PATH . '/inc/Services/Payment/SepaySettingsManager.php')) {
+    // 1. Foundation: Settings Manager (no dependencies)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepaySettingsManager.php';
+
+    // 2. Foundation: Security Validator (no dependencies)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepaySecurityValidator.php';
+
+    // 3. Foundation: Token Manager (no dependencies)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayTokenManager.php';
+
+    // 4. API Client (depends on: TokenManager)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayAPIClient.php';
+
+    // 5. OAuth Service (depends on: TokenManager, Settings)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayOAuthService.php';
+
+    // 6. Bank Account Service (depends on: APIClient)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayBankAccountService.php';
+
+    // 7. Payment Service (depends on: Settings, BankAccount)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayPaymentService.php';
+
+    // 8. Webhook Handler (depends on: APIClient, Security, Payment)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayWebhookHandler.php';
+
+    // 9. Main Gateway Facade (depends on: ALL above services)
+    require_once VIE_THEME_PATH . '/inc/Services/Payment/SepayGateway.php';
+} elseif (file_exists(VIE_THEME_PATH . '/inc/classes/class-sepay-gateway.php')) {
+    // Fallback to old monolithic file (backward compatibility)
     require_once VIE_THEME_PATH . '/inc/classes/class-sepay-gateway.php';
+}
+
+// Custom Fields for Hotel Location (Transport)
+if (file_exists(VIE_THEME_PATH . '/inc/admin/Taxonomy/TransportFields.php')) {
+    require_once VIE_THEME_PATH . '/inc/admin/Taxonomy/TransportFields.php';
+}
+
+// Hotel Post Type - Đảm bảo Hotel post type sử dụng custom capabilities
+if (file_exists(VIE_THEME_PATH . '/inc/admin/HotelPostType.php')) {
+    require_once VIE_THEME_PATH . '/inc/admin/HotelPostType.php';
+}
+
+// Role Manager - Quản lý phân quyền người dùng (Hotel Manager role)
+if (file_exists(VIE_THEME_PATH . '/inc/admin/RoleManager.php')) {
+    require_once VIE_THEME_PATH . '/inc/admin/RoleManager.php';
+}
+
+// Database Installer - Tự động tạo và migrate database tables
+if (file_exists(VIE_THEME_PATH . '/inc/classes/class-database-installer.php')) {
+    require_once VIE_THEME_PATH . '/inc/classes/class-database-installer.php';
 }
 
 /**
@@ -150,47 +248,44 @@ if (file_exists(VIE_THEME_PATH . '/inc/hooks/shortcodes.php')) {
 
 /**
  * ============================================================================
- * PHẦN 6: LOAD ADMIN CONTROLLERS (Chỉ trong admin)
+ * PHẦN 6: LOAD ADMIN PAGES (Chỉ trong admin)
  * ============================================================================
+ * v2.1: Page Controller pattern (old files removed in cleanup)
  */
 if (is_admin()) {
-    // Controller quản lý phòng
-    if (file_exists(VIE_THEME_PATH . '/inc/admin/class-admin-rooms.php')) {
-        require_once VIE_THEME_PATH . '/inc/admin/class-admin-rooms.php';
-    }
-    
-    // Controller quản lý đặt phòng
-    if (file_exists(VIE_THEME_PATH . '/inc/admin/class-admin-bookings.php')) {
-        require_once VIE_THEME_PATH . '/inc/admin/class-admin-bookings.php';
-    }
-    
-    // Controller lịch giá
-    if (file_exists(VIE_THEME_PATH . '/inc/admin/class-admin-calendar.php')) {
-        require_once VIE_THEME_PATH . '/inc/admin/class-admin-calendar.php';
-    }
-    
-    // Controller cài đặt
-    if (file_exists(VIE_THEME_PATH . '/inc/admin/class-admin-settings.php')) {
-        require_once VIE_THEME_PATH . '/inc/admin/class-admin-settings.php';
-    }
+    // Bookings Page
+    require_once VIE_THEME_PATH . '/inc/admin/Pages/BookingsPage.php';
+
+    // Calendar Page
+    require_once VIE_THEME_PATH . '/inc/admin/Pages/CalendarPage.php';
+
+    // Rooms Page
+    require_once VIE_THEME_PATH . '/inc/admin/Pages/RoomsPage.php';
+
+    // Settings Page
+    require_once VIE_THEME_PATH . '/inc/admin/Pages/SettingsPage.php';
 }
 
 /**
  * ============================================================================
  * PHẦN 7: LOAD FRONTEND CONTROLLERS
  * ============================================================================
+ * v2.1: Shortcode Controller + AJAX Handler patterns (old files removed in cleanup)
  */
 
-// Shortcode hiển thị danh sách phòng
-if (file_exists(VIE_THEME_PATH . '/inc/frontend/class-shortcode-rooms.php')) {
-    require_once VIE_THEME_PATH . '/inc/frontend/class-shortcode-rooms.php';
-}
+// Rooms Shortcode
+// Registers 3 shortcodes: [vie_hotel_rooms], [vie_room_search], [vie_checkout]
+require_once VIE_THEME_PATH . '/inc/frontend/Shortcodes/RoomsShortcode.php';
 
-// AJAX handlers cho frontend
-if (file_exists(VIE_THEME_PATH . '/inc/frontend/class-ajax-handlers.php')) {
-    require_once VIE_THEME_PATH . '/inc/frontend/class-ajax-handlers.php';
-}
+// Frontend AJAX Handlers (split into focused classes)
+// Booking AJAX: calculate_price, check_availability, submit_booking, get_room_detail
+require_once VIE_THEME_PATH . '/inc/frontend/AJAX/BookingAjax.php';
 
+// Payment AJAX: process_checkout, update_booking_info
+require_once VIE_THEME_PATH . '/inc/frontend/AJAX/PaymentAjax.php';
+
+// Calendar AJAX: get_calendar_prices
+require_once VIE_THEME_PATH . '/inc/frontend/AJAX/CalendarAjax.php';
 /**
  * ============================================================================
  * DEBUG LOG

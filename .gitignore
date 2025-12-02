@@ -1,0 +1,39 @@
+# ============================================================================
+# VIELIMOUSINE CHILD THEME - GITIGNORE
+# ============================================================================
+
+# Sensitive files - NEVER commit these
+inc/config/credentials.php
+credentials/*.json
+credentials/*
+!credentials/.htaccess
+
+# Logs
+logs/*.log
+logs/*
+!logs/.htaccess
+
+# Data files
+data/*.xlsx
+data/*.csv
+data/*
+!data/.htaccess
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-*
+
+# Backup folder (optional - uncomment to exclude)
+# _backup_legacy_v1_291124/
+
+# Node modules (if any)
+node_modules/
+
+# Compiled files
+*.min.css.map
+*.min.js.map

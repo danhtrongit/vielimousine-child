@@ -8,6 +8,77 @@
  * @since 2.0.0
  */
 
+/* ===== BOOKING LIST TABLE ===== */
+
+/* Bảng danh sách đặt phòng - WordPress Native */
+.wp-list-table.widefat.fixed tbody td {
+    vertical-align: middle;
+    padding: 10px;
+}
+
+/* Fix cột thao tác */
+.wp-list-table th:last-child,
+.wp-list-table td:last-child {
+    text-align: center;
+}
+
+/* Status Badge Inline - Dùng trong table */
+.vie-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+/* ===== STATUS BADGE COLORS ===== */
+
+/* Chờ thanh toán / Chờ xác nhận - Vàng */
+.vie-status-badge[style*="background:#f59e0b"],
+.vie-booking-status-pending,
+.vie-booking-status-pending_payment {
+    background-color: var(--status-warning) !important;
+    color: var(--text-warning) !important;
+}
+
+/* Đã xác nhận - Xanh dương */
+.vie-status-badge[style*="background:#3b82f6"],
+.vie-booking-status-confirmed {
+    background-color: var(--status-info) !important;
+    color: var(--text-info) !important;
+}
+
+/* Đang xử lý - Tím */
+.vie-status-badge[style*="background:#8b5cf6"],
+.vie-booking-status-processing {
+    background-color: var(--status-purple) !important;
+    color: var(--text-purple) !important;
+}
+
+/* Đã thanh toán / Hoàn thành - Xanh lá */
+.vie-status-badge[style*="background:#10b981"],
+.vie-booking-status-paid,
+.vie-booking-status-completed {
+    background-color: var(--status-success) !important;
+    color: var(--text-success) !important;
+}
+
+/* Đã hủy - Đỏ */
+.vie-status-badge[style*="background:#ef4444"],
+.vie-booking-status-cancelled {
+    background-color: var(--status-danger) !important;
+    color: var(--text-danger) !important;
+}
+
+/* Không đến - Xám */
+.vie-status-badge[style*="background:#6b7280"],
+.vie-booking-status-no_show {
+    background-color: var(--status-default) !important;
+    color: var(--text-default) !important;
+}
+
 /* ===== BOOKING DETAIL PAGE ===== */
 
 /* Total Box - Dark Green Theme */

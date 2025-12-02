@@ -1,5 +1,0 @@
-# Deny all access to this directory
-<Files "*">
-    Order Allow,Deny
-    Deny from all
-</Files>

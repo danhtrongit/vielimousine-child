@@ -366,7 +366,6 @@
                     if (response.success) {
                         var room = response.data.room;
                         $('#info-total-rooms').text(room.total_rooms + ' phòng');
-                        $('#info-base-price').text(VieRooms.formatCurrency(room.base_price));
                         $('#info-occupancy').text(room.base_occupancy + ' người (max ' + room.max_adults + ')');
                         $infoBox.show();
                     }
