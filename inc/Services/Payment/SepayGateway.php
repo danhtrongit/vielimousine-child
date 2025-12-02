@@ -719,4 +719,67 @@ class Vie_SePay_Gateway
             'last_connected' => $this->oauth->get_last_connected(),
         );
     }
+
+    /**
+     * Get setting by key
+     *
+     * Delegate to SettingsManager.
+     *
+     * @since   2.1.0
+     * @param   string  $key        Setting key
+     * @param   mixed   $default    Default value
+     * @return  mixed               Setting value
+     */
+    public function get_setting($key, $default = '')
+    {
+        return $this->settings->get_setting($key, $default);
+    }
+
+    /**
+     * Format currency
+     *
+     * Helper method để format số tiền.
+     *
+     * @since   2.1.0
+     * @param   float   $amount     Amount to format
+     * @return  string              Formatted amount
+     */
+    public function format_currency($amount)
+    {
+        // Sử dụng hàm helper nếu tồn tại
+        if (function_exists('vie_format_currency')) {
+            return vie_format_currency($amount);
+        }
+
+        // Fallback format
+        return number_format($amount, 0, ',', '.') . ' đ';
+    }
+}
+
+/**
+ * ============================================================================
+ * GLOBAL HELPER FUNCTION
+ * ============================================================================
+ */
+
+if (!function_exists('vie_sepay')) {
+    /**
+     * Get SePay Gateway instance
+     *
+     * Global helper function để lấy singleton instance.
+     * Được sử dụng trong templates và frontend code.
+     *
+     * USAGE:
+     * $sepay = vie_sepay();
+     * if ($sepay && $sepay->is_enabled()) {
+     *     // Use sepay
+     * }
+     *
+     * @since   1.0.0
+     * @return  Vie_SePay_Gateway|null  Gateway instance hoặc null nếu chưa init
+     */
+    function vie_sepay()
+    {
+        return Vie_SePay_Gateway::get_instance();
+    }
 }
