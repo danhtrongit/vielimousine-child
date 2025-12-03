@@ -25,10 +25,10 @@ defined('ABSPATH') || exit;
                 <!-- Bank Account -->
                 <tr>
                     <th scope="row">
-                        <label for="bank_account_id"><?php esc_html_e('Tài khoản ngân hàng', 'vielimousine'); ?></label>
+                        <label for="bank_account"><?php esc_html_e('Tài khoản ngân hàng', 'vielimousine'); ?></label>
                     </th>
                     <td>
-                        <select id="bank_account_id" name="bank_account_id" class="regular-text">
+                        <select id="bank_account" name="bank_account" class="regular-text">
                             <option value=""><?php esc_html_e('-- Chọn tài khoản --', 'vielimousine'); ?></option>
                             <?php foreach ($bank_accounts as $account) : ?>
                                 <?php
@@ -36,7 +36,7 @@ defined('ABSPATH') || exit;
                                 $account_number = $account['account_number'] ?? '';
                                 ?>
                                 <option value="<?php echo esc_attr($account['id']); ?>"
-                                        <?php selected($settings['bank_account_id'] ?? '', $account['id']); ?>>
+                                        <?php selected($settings['bank_account'] ?? '', $account['id']); ?>>
                                     <?php echo esc_html($bank_name . ' - ' . $account_number); ?>
                                 </option>
                             <?php endforeach; ?>
