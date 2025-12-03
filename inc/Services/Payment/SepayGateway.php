@@ -477,6 +477,21 @@ class Vie_SePay_Gateway
     }
 
     /**
+     * Get single setting
+     *
+     * Delegate to SettingsManager.
+     *
+     * @since   1.0.0
+     * @param   string  $key        Setting key
+     * @param   mixed   $default    Default value
+     * @return  mixed               Setting value
+     */
+    public function get_setting($key, $default = '')
+    {
+        return $this->settings->get_setting($key, $default);
+    }
+
+    /**
      * Update settings
      *
      * Delegate to SettingsManager.
