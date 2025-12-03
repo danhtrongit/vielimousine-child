@@ -720,3 +720,21 @@ class Vie_SePay_Gateway
         );
     }
 }
+
+/**
+ * ============================================================================
+ * BACKWARD COMPATIBILITY
+ * ============================================================================
+ */
+
+if (!function_exists('vie_sepay')) {
+    /**
+     * Helper function để lấy instance của SePay Gateway
+     *
+     * @return Vie_SePay_Gateway
+     */
+    function vie_sepay()
+    {
+        return Vie_SePay_Gateway::get_instance();
+    }
+}
