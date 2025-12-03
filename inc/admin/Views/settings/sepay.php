@@ -31,9 +31,13 @@ defined('ABSPATH') || exit;
                         <select id="bank_account_id" name="bank_account_id" class="regular-text">
                             <option value=""><?php esc_html_e('-- Chọn tài khoản --', 'vielimousine'); ?></option>
                             <?php foreach ($bank_accounts as $account) : ?>
+                                <?php
+                                $bank_name = $account['bank_name'] ?? ($account['bank']['short_name'] ?? '');
+                                $account_number = $account['account_number'] ?? '';
+                                ?>
                                 <option value="<?php echo esc_attr($account['id']); ?>"
                                         <?php selected($settings['bank_account_id'] ?? '', $account['id']); ?>>
-                                    <?php echo esc_html($account['bank_name'] . ' - ' . $account['account_number']); ?>
+                                    <?php echo esc_html($bank_name . ' - ' . $account_number); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
