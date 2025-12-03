@@ -142,78 +142,85 @@ get_header();
 
                     <?php
                     $sepay = function_exists('vie_sepay') ? vie_sepay() : null;
-                    if ($sepay && $sepay->is_enabled()):
+                    $show_sepay = false;
+                    $bank = null;
+
+                    if ($sepay && $sepay->is_enabled()) {
                         $bank_account_id = $sepay->get_setting('bank_account');
                         $bank = $bank_account_id ? $sepay->get_bank_account($bank_account_id) : null;
 
-                        if ($bank):
-                            $remark = $sepay->get_payment_code($booking->id);
-                            $qr_url = $sepay->generate_qr_url($booking->id, $booking->total_amount);
-                            ?>
+                        if ($bank) {
+                            $show_sepay = true;
+                        }
+                    }
 
-                            <div class="payment-method">
-                                <div class="payment-header">
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/>
-                                    </svg>
-                                    <span>Chuyển khoản ngân hàng</span>
+                    if ($show_sepay && $bank):
+                        $remark = $sepay->get_payment_code($booking->id);
+                        $qr_url = $sepay->generate_qr_url($booking->id, $booking->total_amount);
+                        ?>
+
+                        <div class="payment-method">
+                            <div class="payment-header">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/>
+                                </svg>
+                                <span>Chuyển khoản ngân hàng</span>
+                            </div>
+
+                            <div class="qr-section">
+                                <img src="<?php echo esc_url($qr_url); ?>" alt="QR Code" class="qr-code">
+                                <p class="qr-instruction">Quét mã QR để thanh toán</p>
+                            </div>
+
+                            <div class="bank-info">
+                                <div class="info-row">
+                                    <span class="label">Ngân hàng</span>
+                                    <span class="value"><?php echo esc_html($bank['bank']['short_name']); ?></span>
                                 </div>
-
-                                <div class="qr-section">
-                                    <img src="<?php echo esc_url($qr_url); ?>" alt="QR Code" class="qr-code">
-                                    <p class="qr-instruction">Quét mã QR để thanh toán</p>
-                                </div>
-
-                                <div class="bank-info">
-                                    <div class="info-row">
-                                        <span class="label">Ngân hàng</span>
-                                        <span class="value"><?php echo esc_html($bank['bank']['short_name']); ?></span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="label">Số tài khoản</span>
-                                        <div class="copyable-value">
-                                            <span class="value" id="account-number"><?php echo esc_html($bank['account_number']); ?></span>
-                                            <button type="button" class="btn-copy" onclick="copyToClipboard('account-number')">📋</button>
-                                        </div>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="label">Chủ tài khoản</span>
-                                        <span class="value"><?php echo esc_html($bank['account_holder_name']); ?></span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="label">Số tiền</span>
-                                        <div class="copyable-value">
-                                            <span class="value amount" id="amount"><?php echo number_format($booking->total_amount, 0, ',', '.'); ?> đ</span>
-                                            <button type="button" class="btn-copy" onclick="copyToClipboard('amount-raw')">📋</button>
-                                            <span id="amount-raw" style="display:none"><?php echo $booking->total_amount; ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="info-row highlight">
-                                        <span class="label">Nội dung CK</span>
-                                        <div class="copyable-value">
-                                            <span class="value" id="transfer-code"><?php echo esc_html($remark); ?></span>
-                                            <button type="button" class="btn-copy" onclick="copyToClipboard('transfer-code')">📋</button>
-                                        </div>
+                                <div class="info-row">
+                                    <span class="label">Số tài khoản</span>
+                                    <div class="copyable-value">
+                                        <span class="value" id="account-number"><?php echo esc_html($bank['account_number']); ?></span>
+                                        <button type="button" class="btn-copy" onclick="copyToClipboard('account-number')">📋</button>
                                     </div>
                                 </div>
-
-                                <div class="payment-note">
-                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
-                                    </svg>
-                                    <span>Vui lòng giữ nguyên nội dung chuyển khoản để hệ thống tự động xác nhận</span>
+                                <div class="info-row">
+                                    <span class="label">Chủ tài khoản</span>
+                                    <span class="value"><?php echo esc_html($bank['account_holder_name']); ?></span>
                                 </div>
-
-                                <!-- Payment Status -->
-                                <div class="payment-status" id="payment-status">
-                                    <div class="status-checking">
-                                        <div class="spinner"></div>
-                                        <span>Đang chờ thanh toán...</span>
+                                <div class="info-row">
+                                    <span class="label">Số tiền</span>
+                                    <div class="copyable-value">
+                                        <span class="value amount" id="amount"><?php echo number_format($booking->total_amount, 0, ',', '.'); ?> đ</span>
+                                        <button type="button" class="btn-copy" onclick="copyToClipboard('amount-raw')">📋</button>
+                                        <span id="amount-raw" style="display:none"><?php echo $booking->total_amount; ?></span>
+                                    </div>
+                                </div>
+                                <div class="info-row highlight">
+                                    <span class="label">Nội dung CK</span>
+                                    <div class="copyable-value">
+                                        <span class="value" id="transfer-code"><?php echo esc_html($remark); ?></span>
+                                        <button type="button" class="btn-copy" onclick="copyToClipboard('transfer-code')">📋</button>
                                     </div>
                                 </div>
                             </div>
 
-                        <?php endif; ?>
+                            <div class="payment-note">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+                                </svg>
+                                <span>Vui lòng giữ nguyên nội dung chuyển khoản để hệ thống tự động xác nhận</span>
+                            </div>
+
+                            <!-- Payment Status -->
+                            <div class="payment-status" id="payment-status">
+                                <div class="status-checking">
+                                    <div class="spinner"></div>
+                                    <span>Đang chờ thanh toán...</span>
+                                </div>
+                            </div>
+                        </div>
+
                     <?php else: ?>
                         <p>Vui lòng liên hệ để thanh toán</p>
                     <?php endif; ?>

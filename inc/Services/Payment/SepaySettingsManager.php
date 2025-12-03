@@ -186,7 +186,8 @@ class Vie_SePay_Settings_Manager
      */
     public function is_enabled()
     {
-        return $this->get_setting('enabled') === 'yes';
+        $enabled = $this->get_setting('enabled');
+        return $enabled === 'yes' || $enabled === '1';
     }
 
     /**

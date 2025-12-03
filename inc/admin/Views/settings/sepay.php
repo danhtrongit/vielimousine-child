@@ -54,11 +54,19 @@ defined('ABSPATH') || exit;
                     </th>
                     <td>
                         <label>
+                            <?php
+                            // Check enabled status (accept 'yes', '1', or true)
+                            $is_enabled = !empty($settings['enabled']) && (
+                                $settings['enabled'] === 'yes' ||
+                                $settings['enabled'] === '1' ||
+                                $settings['enabled'] === true
+                            );
+                            ?>
                             <input type="checkbox"
                                    id="enabled"
                                    name="enabled"
                                    value="1"
-                                   <?php checked(!empty($settings['enabled'])); ?>>
+                                   <?php checked($is_enabled); ?>>
                             <?php esc_html_e('Bật thanh toán SePay', 'vielimousine'); ?>
                         </label>
                     </td>

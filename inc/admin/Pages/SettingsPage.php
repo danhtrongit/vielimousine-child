@@ -467,8 +467,11 @@ class Vie_Admin_Settings_Page
 
         $sepay = Vie_SePay_Gateway::get_instance();
 
+        // Normalize 'enabled' to 'yes'/'no'
+        $enabled = (!empty($_POST['enabled']) && $_POST['enabled'] == '1') ? 'yes' : 'no';
+
         $settings = array(
-            'enabled' => sanitize_text_field($_POST['enabled'] ?? 'no'),
+            'enabled' => $enabled,
             'bank_account' => sanitize_text_field($_POST['bank_account'] ?? ''),
             'pay_code_prefix' => strtoupper(sanitize_text_field($_POST['pay_code_prefix'] ?? 'VL')),
         );
